@@ -57,11 +57,11 @@ ScenePtr SceneSampler::sample(const SceneConstPtr &nominal) const
     scene->moveAllObjectsGlobal(offset_);
 
     // apply world Variation
-    if (world_variation_)
-    {
-        const auto &tf = world_variation_->sample();
-        scene->moveAllObjectsGlobal(tf);
-    }
+    // if (world_variation_)
+    // {
+    //     const auto &tf = world_variation_->sample();
+    //     scene->moveAllObjectsGlobal(tf);
+    // }
 
     // Apply object variations
     for (const auto &object_var : object_variations_)
