@@ -7,8 +7,8 @@
 
   <!-- Arguments for ROS parameters -->
   <arg name="robot" default="package://motion_bench_maker/configs/robots/fetch.yaml" />
-  <arg name="scene" default="package://motion_bench_maker/configs/scenes/bookshelf/tall.yaml" />
-  <arg name="variation" default="package://motion_bench_maker/configs/scenes/bookshelf/variation.yaml" />
+  <arg name="scene" default="package://motion_bench_maker/configs/scenes/bookshelf/scene_tall.yaml" />
+  <arg name="variation" default="package://motion_bench_maker/configs/scenes/bookshelf/variation_tall.yaml" />
 
   <!-- Rviz Parameters -->
   <arg name="config" default="visualize" />

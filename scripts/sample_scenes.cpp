@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     parser::shutdownIfError(exec_name, error);
 
     auto robot = std::make_shared<Robot>("RoboCop");
-    robot->initialize(robot_file);
+    robot->initializeFromYAML(robot_file);
     auto rviz = std::make_shared<IO::RVIZHelper>(robot);
 
     auto scene = std::make_shared<Scene>(robot);
