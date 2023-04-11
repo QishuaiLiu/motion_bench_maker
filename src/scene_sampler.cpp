@@ -67,6 +67,11 @@ ScenePtr SceneSampler::sample(const SceneConstPtr &nominal) const
     for (const auto &object_var : object_variations_)
         for (const auto &name : object_var->names)
         {
+            // make sure the first object didnot change.
+            if (name == "Can1")
+            {
+                continue;
+            }
             if (not scene->hasObject(name))
             {
                 ROS_WARN("Object %s does not exist in the nominal scene !", name.c_str());
