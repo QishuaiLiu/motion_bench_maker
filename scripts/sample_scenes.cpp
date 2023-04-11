@@ -9,10 +9,25 @@
 #include <motion_bench_maker/scene_sampler.h>
 
 // Robowflex library
+#include <robowflex_library/io.h>
 #include <robowflex_library/io/visualization.h>
 #include <robowflex_library/scene.h>
 #include <robowflex_library/robot.h>
 
+namespace
+{
+    static int number = 0;
+    std::string getSceneFolder(const std::string &scene_file)
+    {
+        auto pos = scene_file.rfind("/");
+        return scene_file.substr(0, pos);
+    }
+
+    std::string generateNewScene(const std::string &scene_folder)
+    {
+        return scene_folder + "/test/" + std::to_string(number++) + ".yaml";
+    }
+}  // namespace
 // Robowflex ompl
 using namespace robowflex;
 int main(int argc, char **argv)
@@ -46,6 +61,8 @@ int main(int argc, char **argv)
     {
         auto sampled_scene = scene_sampler->sample(scene);
         rviz->updateScene(sampled_scene);
+        // auto generate_file_name = generateNewScene(getSceneFolder(file_name));
+        // sampled_scene->toYAMLFile(generate_file_name);
         parser::waitForUser("Displaying sampled scene!");
     }
 

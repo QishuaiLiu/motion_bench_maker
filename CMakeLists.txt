@@ -88,6 +88,10 @@ add_executable(sensed_scenes scripts/sensed_scenes.cpp)
 target_link_libraries(sensed_scenes ${LIBRARY_NAME})
 add_dependencies(sensed_scenes ${catkin_EXPORTED_TARGETS})
 
+add_executable(load_problem scripts/load_problem.cpp)
+target_link_libraries(load_problem ${LIBRARY_NAME})
+add_dependencies(load_problem ${catkin_EXPORTED_TARGETS})
+
 #add_executable(benchmark_simple scripts/benchmark_simple.cpp)
 #target_link_libraries(benchmark_simple ${LIBRARY_NAME})
 #add_dependencies(benchmark_simple ${catkin_EXPORTED_TARGETS})
