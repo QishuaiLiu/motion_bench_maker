@@ -56,12 +56,13 @@ int main(int argc, char **argv)
     scene->fromYAMLFile(scene_file);
 
     auto scene_sampler = std::make_shared<SceneSampler>(var_file);
+    const std::string generate_scene_file = IO::resolvePackage(scene_file);
 
     while (true)
     {
         auto sampled_scene = scene_sampler->sample(scene);
         rviz->updateScene(sampled_scene);
-        // auto generate_file_name = generateNewScene(getSceneFolder(file_name));
+        // auto generate_file_name = generateNewScene(getSceneFolder(generate_scene_file));
         // sampled_scene->toYAMLFile(generate_file_name);
         parser::waitForUser("Displaying sampled scene!");
     }

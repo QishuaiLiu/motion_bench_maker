@@ -67,8 +67,7 @@ ScenePtr SceneSampler::sample(const SceneConstPtr &nominal) const
     for (const auto &object_var : object_variations_)
         for (const auto &name : object_var->names)
         {
-            ROS_INFO("name is: %s", name.c_str());
-            // make sure the first object didnot change.
+            // make sure the start and goal object didnot change.
             if (name == "Can1" || name == "Can6")
             {
                 continue;

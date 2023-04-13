@@ -55,7 +55,7 @@ world:
         frame_id: base_link
       id: Can2
       pose:
-        position: [0, 0.2072292358810618, 0]
+        position: [0, -0.03189601885580551, 0]
         orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
@@ -67,7 +67,7 @@ world:
         frame_id: base_link
       id: Can3
       pose:
-        position: [0, -0.4183477666911115, 0]
+        position: [0, 0.3825901144648708, 0]
         orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
@@ -79,7 +79,7 @@ world:
         frame_id: base_link
       id: Can4
       pose:
-        position: [0, -0.1963861863434804, 0]
+        position: [0, -0.2066055986879916, 0]
         orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
@@ -91,7 +91,7 @@ world:
         frame_id: base_link
       id: Can5
       pose:
-        position: [0, -0.02900053752199183, 0]
+        position: [0, 0.1388501543257135, 0]
         orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
@@ -103,7 +103,7 @@ world:
         frame_id: base_link
       id: Can6
       pose:
-        position: [0, -0.02089871511959918, 0]
+        position: [0, 0, 0]
         orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
@@ -115,7 +115,7 @@ world:
         frame_id: base_link
       id: Can7
       pose:
-        position: [0, 0.3260766789866713, 0]
+        position: [0, -0.004495733184506412, 0]
         orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
@@ -127,7 +127,7 @@ world:
         frame_id: base_link
       id: Can8
       pose:
-        position: [0, 0.3718246552286178, 0]
+        position: [0, -0.09451148659756203, 0]
         orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
@@ -139,7 +139,7 @@ world:
         frame_id: base_link
       id: Can9
       pose:
-        position: [0, 0.2065666809409278, 0]
+        position: [0, -0.1039399166779909, 0]
         orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
