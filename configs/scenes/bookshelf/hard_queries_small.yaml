@@ -1,3 +1,12 @@
+start_queries:
+  - objects: ["Can6"]
+    tag: "Front"
+    offset:
+      position: [-0.2, 0.0, 0.0]
+      orientation: [0, 0, 0, 1]
+      position_tol: [0.01, 0.01, 0.01]
+      orientation_tol: [0.01, 0.01, 0.01]
+    attached: "False"
 goal_queries:
   - objects: ["Can1"]
     tag: "Front"
