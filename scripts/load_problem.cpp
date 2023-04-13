@@ -32,16 +32,37 @@ int main(int argc, char **argv)
     error += !parser::get(exec_name, node, "robot", robot_file);
     error += !parser::get(exec_name, node, "scene", scene_file_dir);
     error += !parser::get(exec_name, node, "planning_group", planning_group);
+    error += !parser::get(exec_name, node, "request_file", request_file);
     parser::shutdownIfError(exec_name, error);
 
     auto robot = std::make_shared<Robot>("RoboCop");
     robot->initializeFromYAML(robot_file);
+    robot->loadKinematics(planning_group);
     auto rviz = std::make_shared<IO::RVIZHelper>(robot);
 
     auto scene = std::make_shared<Scene>(robot);
+    auto start_state = std::make_shared<robot_state::RobotState>(*robot->getScratchStateConst());
+
+    const std::string request_file_name = IO::resolvePath(request_file);
+
+    geometry_msgs::Pose ee_pos;
+    ee_pos.position.x = 0;
+    ee_pos.position.y = 0;
+    ee_pos.position.z = 0;
+    ee_pos.orientation.x = 0;
+    ee_pos.orientation.y = 0;
+    ee_pos.orientation.z = 0;
+    ee_pos.orientation.w = 1;
+
+    RobotPoseVector ee_offset = {TF::poseMsgToEigen(ee_pos)};
+
+    // problem generator
+    auto pg = std::make_shared<ProblemGenerator>(request_file_name);
+    pg->setParameters(robot, planning_group, ee_offset[0]);
 
     std::vector<std::string> scene_file_vec;
-    for (int i = 0; i < 34; ++i)
+    int total_scene_num = 24;
+    for (int i = 0; i < total_scene_num; ++i)
     {
         scene_file_vec.push_back(scene_file_dir + std::to_string(i) + ".yaml");
     }
@@ -50,7 +71,7 @@ int main(int argc, char **argv)
 
     while (true)
     {
-        count = (count + 1) % 34;
+        count = (count + 1) % total_scene_num;
         scene->fromYAMLFile(scene_file_vec[count]);
 
         rviz->updateScene(scene);  // auto generate_file_name =
@@ -58,8 +79,9 @@ int main(int argc, char **argv)
         // auto request = std::make_shared<MotionRequestBuilder>(robot);
         // request->fromYAMLFile(request_file);
         // request->setConfig("PRM");
-        auto pg = std::make_shared<ProblemGenerator>(request_file);
-        // pg->setParameters();
+        pg->updateScene(scene);
+        auto result = pg->createRandomRequest();
+
         // sampled_scene->toYAMLFile(generate_file_name);
         parser::waitForUser("Displaying the scene!");
     }
