@@ -11,6 +11,8 @@
   <arg name="request_file" default="package://motion_bench_maker/configs/scenes/bookshelf/hard_queries_small.yaml" />
   <arg name="planning_group" default="arm_with_torso" />
   <arg name="ompl_config"  default="package://motion_bench_maker/configs/ompl/ompl_planning_fetch.yaml" />
+  <arg name="planner_name" default="RRTConnect_BOOKSHELF_SMALL"/>
+
   <!-- <arg name="variation" default="package://motion_bench_maker/configs/scenes/bookshelf/variation_tall.yaml" /> -->
 
   <!-- Rviz Parameters -->
@@ -24,6 +26,7 @@
     <param name="planning_group" value="$(arg planning_group)" />
     <param name="request_file" value="$(arg request_file)" />
     <param name="ompl_config" value="$(arg ompl_config)" />
+    <param name="planner_name" value="$(arg planner_name)"/>
     <!-- <param name="variation" value="$(arg variation)" /> -->
   </node>
 

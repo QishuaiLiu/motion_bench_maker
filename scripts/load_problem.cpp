@@ -10,6 +10,7 @@
 #include <robowflex_library/io.h>
 #include <robowflex_library/io/visualization.h>
 #include <robowflex_library/scene.h>
+#include <robowflex_library/trajectory.h>
 #include <robowflex_library/robot.h>
 #include <robowflex_library/builder.h>
 #include <motion_bench_maker/problem_generator.h>
@@ -25,7 +26,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "load_problem");
     ros::NodeHandle node("~");
 
-    std::string robot_file, scene_file_dir, var_file, request_file, planning_group, ompl_config;
+    std::string robot_file, scene_file_dir, var_file, request_file, planning_group, planner_name, ompl_config;
 
     std::string exec_name = "load_problem";
 
@@ -37,6 +38,7 @@ int main(int argc, char **argv)
     error += !parser::get(exec_name, node, "planning_group", planning_group);
     error += !parser::get(exec_name, node, "request_file", request_file);
     error += !parser::get(exec_name, node, "ompl_config", ompl_config);
+    error += !parser::get(exec_name, node, "planner_name", planner_name);
     parser::shutdownIfError(exec_name, error);
 
     auto robot = std::make_shared<Robot>("RoboCop");
@@ -96,6 +98,32 @@ int main(int argc, char **argv)
         auto result = pg->createRandomRequest();
         // std::cout << "result: " << result.second << std::endl;
 
+        // Try to solve with a planner to verify feasibility
+        const auto &request = result.first;
+        // Add the planner so we know that the correct config exists
+        request->setPlanner(planner);
+        request->setAllowedPlanningTime(60);
+        request->setNumPlanningAttempts(2);
+        if (!request->setConfig(planner_name))
+            ROS_ERROR("Did not find planner %s", planner_name.c_str());
+        const auto &res = planner->plan(scene, request->getRequestConst());
+
+        if (res.error_code_.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
+        {
+            auto trajectory = std::make_shared<robowflex::Trajectory>(*res.trajectory_);
+            rviz->updateScene(scene);
+            // Visualize start state.
+            rviz->visualizeState(request->getStartConfiguration());
+            parser::waitForUser("Displaying initial state!");
+
+            // Visualize goal state.
+            rviz->visualizeState(request->getGoalConfiguration());
+            parser::waitForUser("Displaying goal state!");
+
+            // Visualize the trajectory.
+            rviz->updateTrajectory(trajectory->getTrajectory());
+            parser::waitForUser("Displaying The trajectory!");
+        }
         // sampled_scene->toYAMLFile(generate_file_name);
         parser::waitForUser("Displaying the scene!");
     }
