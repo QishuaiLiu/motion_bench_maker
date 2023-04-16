@@ -14,6 +14,9 @@
 #include <robowflex_library/builder.h>
 #include <motion_bench_maker/problem_generator.h>
 
+// Robowflex ompl
+#include <robowflex_ompl/ompl_interface.h>
+
 using namespace robowflex;
 
 int main(int argc, char **argv)
@@ -22,7 +25,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "load_problem");
     ros::NodeHandle node("~");
 
-    std::string robot_file, scene_file_dir, var_file, request_file, planning_group;
+    std::string robot_file, scene_file_dir, var_file, request_file, planning_group, ompl_config;
 
     std::string exec_name = "load_problem";
 
@@ -33,6 +36,7 @@ int main(int argc, char **argv)
     error += !parser::get(exec_name, node, "scene", scene_file_dir);
     error += !parser::get(exec_name, node, "planning_group", planning_group);
     error += !parser::get(exec_name, node, "request_file", request_file);
+    error += !parser::get(exec_name, node, "ompl_config", ompl_config);
     parser::shutdownIfError(exec_name, error);
 
     auto robot = std::make_shared<Robot>("RoboCop");
@@ -55,6 +59,15 @@ int main(int argc, char **argv)
     ee_pos.orientation.w = 1;
 
     RobotPoseVector ee_offset = {TF::poseMsgToEigen(ee_pos)};
+
+    // planner setting
+    auto settings = OMPL::Settings();
+    settings.hybridize_solutions = false;
+    settings.interpolate_solutions = false;
+    auto planner = std::make_shared<robowflex::OMPL::OMPLInterfacePlanner>(robot, "planner");
+    planner->initialize(ompl_config, settings);
+
+    // auto planner = setup->createPlanner("planner", settings);
 
     // problem generator
     auto pg = std::make_shared<ProblemGenerator>(request_file_name);
@@ -81,6 +94,7 @@ int main(int argc, char **argv)
         // request->setConfig("PRM");
         pg->updateScene(scene);
         auto result = pg->createRandomRequest();
+        // std::cout << "result: " << result.second << std::endl;
 
         // sampled_scene->toYAMLFile(generate_file_name);
         parser::waitForUser("Displaying the scene!");
