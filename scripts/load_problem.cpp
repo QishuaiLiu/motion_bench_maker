@@ -81,6 +81,7 @@ int main(int argc, char **argv)
     {
         scene_file_vec.push_back(scene_file_dir + std::to_string(i) + ".yaml");
     }
+    std::vector<bool> planning_result(total_scene_num);
 
     int count = 0;
 
@@ -96,8 +97,12 @@ int main(int argc, char **argv)
         // request->setConfig("PRM");
         pg->updateScene(scene);
         auto result = pg->createRandomRequest();
-        // std::cout << "result: " << result.second << std::endl;
-
+        if (!result.second)
+        {
+            ROS_INFO("create request failed..");
+            planning_result[count - 1] = false;
+            continue;
+        }
         // Try to solve with a planner to verify feasibility
         const auto &request = result.first;
         // Add the planner so we know that the correct config exists
@@ -123,6 +128,8 @@ int main(int argc, char **argv)
             // Visualize the trajectory.
             rviz->updateTrajectory(trajectory->getTrajectory());
             parser::waitForUser("Displaying The trajectory!");
+            planning_result[count - 1] = true;
+            ROS_INFO("process scene number: %d", count - 1);
         }
         // sampled_scene->toYAMLFile(generate_file_name);
         parser::waitForUser("Displaying the scene!");
