@@ -1,0 +1,38 @@
+<launch>
+
+  <!-- GDB Debug Option -->
+  <arg name="debug" default="false" />
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+  <arg if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
+
+  <!-- Arguments for ROS parameters -->
+  <arg name="robot" default="package://motion_bench_maker/configs/robots/fetch.yaml" />
+  <arg name="scene" default="package://motion_bench_maker/configs/scenes/bookshelf/test/" />
+  <arg name="request_file" default="package://motion_bench_maker/configs/scenes/bookshelf/hard_queries_small.yaml" />
+  <arg name="planning_group" default="arm_with_torso" />
+  <arg name="ompl_config"  default="package://motion_bench_maker/configs/ompl/ompl_planning_fetch.yaml" />
+  <arg name="planner_name" default="RRTConnect_BOOKSHELF_SMALL"/>
+
+  <!-- <arg name="variation" default="package://motion_bench_maker/configs/scenes/bookshelf/variation_tall.yaml" /> -->
+
+  <!-- Rviz Parameters -->
+  <arg name="config" default="visualize" />
+
+  <!-- Start the create dataset node -->
+  <node  name="load_problem" launch-prefix="$(arg launch_prefix)" pkg="motion_bench_maker" type="move_object" output="screen" required = "true" > 
+    
+    <param name="robot" value="$(arg robot)" />
+    <param name="scene" value="$(arg scene)" />
+    <param name="planning_group" value="$(arg planning_group)" />
+    <param name="request_file" value="$(arg request_file)" />
+    <param name="ompl_config" value="$(arg ompl_config)" />
+    <param name="planner_name" value="$(arg planner_name)"/>
+    <!-- <param name="variation" value="$(arg variation)" /> -->
+  </node>
+
+  <!-- Start rviz since it is always required -->
+  <include file="$(find motion_bench_maker)/launch/rviz.launch" >
+    <arg name="config" value="$(arg config)" />
+  </include>
+  
+</launch>
