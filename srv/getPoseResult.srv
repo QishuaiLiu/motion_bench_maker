@@ -1,0 +1,5 @@
+Header header 
+objectPos[] object_pos
+---
+uint32 seq
+bool[] object_result # for each particle, there exists a corresponding result

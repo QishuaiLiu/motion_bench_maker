@@ -5,6 +5,7 @@
 // Robowflex dataset
 #include <motion_bench_maker/parser.h>
 #include <motion_bench_maker/scene_sampler.h>
+#include <motion_bench_maker/objectPos.h>
 
 // Robowflex library
 #include <robowflex_library/io.h>
@@ -15,12 +16,15 @@
 #include <robowflex_library/builder.h>
 #include <motion_bench_maker/problem_generator.h>
 
+#include <motion_bench_maker/getPoseResult.h>
+
 // Robowflex ompl
 #include <robowflex_ompl/ompl_interface.h>
 
 using namespace robowflex;
 const std::vector<std::string> obj_name{"Can2", "Can3", "Can4", "Can5", "Can7", "Can8", "Can9"};
-
+std::shared_ptr<ProblemGenerator> pg;
+std::shared_ptr<Scene> scene;
 namespace
 {
     std::vector<Eigen::Vector2d> getObjectPose(std::shared_ptr<Scene> scene)
@@ -52,6 +56,43 @@ namespace
     }
 }  // namespace
 
+bool getPlanningResult(std::shared_ptr<ProblemGenerator> &pg, const std::vector<Eigen::Vector2d> &pose,
+                       std::shared_ptr<Scene> &scene)
+{
+    setObjectPose(pose, scene);
+    pg->updateScene(scene);
+    auto result = pg->createRandomRequest();
+    return result.second;
+}
+
+bool getPoseResult(motion_bench_maker::getPoseResultRequest &req,
+                   motion_bench_maker::getPoseResultResponse &res)
+{
+    if (pg == nullptr || scene == nullptr)
+        return false;
+    int size = req.object_pos.size();
+    std::vector<std::vector<Eigen::Vector2d>> object_poses(size);
+    res.object_result.resize(size);
+    std::vector<Eigen::Vector2d> object_pos;       // single particle
+
+    for (int i = 0; i < object_poses.size(); ++i)  // for each particle
+    {
+        object_pos.clear();
+        auto temp_scene = scene->deepCopy();
+        for (int j = 0; j < object_poses[i].size(); ++j)  // for each object in particle
+        {
+            auto &received_pos = req.object_pos[i].object_pos[j];
+            Eigen::Vector2d pos = Eigen::Vector2d(received_pos.x, received_pos.y);
+            object_pos.emplace_back(pos);
+        }
+        bool ret = getPlanningResult(pg, object_pos, temp_scene);
+        res.object_result[i] = ret;
+    }
+    res.seq = req.header.seq;
+
+    return true;
+}
+
 int main(int argc, char **argv)
 {
     // Enables multiple instances running with the same name
@@ -61,6 +102,8 @@ int main(int argc, char **argv)
     std::string robot_file, scene_file_dir, var_file, request_file, planning_group, planner_name, ompl_config;
 
     std::string exec_name = "move_object";
+
+    motion_bench_maker::objectPos object_pos;
 
     // Load ROS params
     size_t error = 0;
@@ -78,7 +121,7 @@ int main(int argc, char **argv)
     robot->loadKinematics(planning_group);
     auto rviz = std::make_shared<IO::RVIZHelper>(robot);
 
-    auto scene = std::make_shared<Scene>(robot);
+    scene = std::make_shared<Scene>(robot);
     auto start_state = std::make_shared<robot_state::RobotState>(*robot->getScratchStateConst());
 
     const std::string request_file_name = IO::resolvePath(request_file);
@@ -104,7 +147,7 @@ int main(int argc, char **argv)
     // auto planner = setup->createPlanner("planner", settings);
 
     // problem generator
-    auto pg = std::make_shared<ProblemGenerator>(request_file_name);
+    pg = std::make_shared<ProblemGenerator>(request_file_name);
     pg->setParameters(robot, planning_group, ee_offset[0]);
 
     std::vector<std::string> scene_file_vec;
@@ -117,59 +160,61 @@ int main(int argc, char **argv)
 
     scene->fromYAMLFile(scene_file_vec[3]);
 
-    while (true)
-    {
-        rviz->updateScene(scene);  // auto generate_file_name =
-        // generateNewScene(getSceneFolder(file_name));
-        parser::waitForUser("Displaying the scene!");
-        auto pose = getObjectPose(scene);
-        for (int i = 0; i < pose.size(); ++i)
-        {
-            pose[i] += Eigen::Vector2d::Ones() * 0.02;
-        }
-        setObjectPose(pose, scene);
+    ros::spin();
 
-        // auto request = std::make_shared<MotionRequestBuilder>(robot);
-        // request->fromYAMLFile(request_file);
-        // request->setConfig("PRM");
-        //     pg->updateScene(scene);
-        //     auto result = pg->createRandomRequest();
-        //     if (!result.second)
-        //     {
-        //         ROS_INFO("create request failed..");
-        //         planning_result[count - 1] = false;
-        //         continue;
-        //     }
-        //     // Try to solve with a planner to verify feasibility
-        //     const auto &request = result.first;
-        //     // Add the planner so we know that the correct config exists
-        //     request->setPlanner(planner);
-        //     request->setAllowedPlanningTime(60);
-        //     request->setNumPlanningAttempts(2);
-        //     if (!request->setConfig(planner_name))
-        //         ROS_ERROR("Did not find planner %s", planner_name.c_str());
-        //     const auto &res = planner->plan(scene, request->getRequestConst());
+    // while (true)
+    // {
+    //     rviz->updateScene(scene);  // auto generate_file_name =
+    //     // generateNewScene(getSceneFolder(file_name));
+    //     parser::waitForUser("Displaying the scene!");
+    //     auto pose = getObjectPose(scene);
+    //     for (int i = 0; i < pose.size(); ++i)
+    //     {
+    //         pose[i] += Eigen::Vector2d::Ones() * 0.02;
+    //     }
+    //     setObjectPose(pose, scene);
 
-        //     if (res.error_code_.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
-        //     {
-        //         auto trajectory = std::make_shared<robowflex::Trajectory>(*res.trajectory_);
-        //         rviz->updateScene(scene);
-        //         // Visualize start state.
-        //         rviz->visualizeState(request->getStartConfiguration());
-        //         parser::waitForUser("Displaying initial state!");
+    // auto request = std::make_shared<MotionRequestBuilder>(robot);
+    // request->fromYAMLFile(request_file);
+    // request->setConfig("PRM");
+    //     pg->updateScene(scene);
+    //     auto result = pg->createRandomRequest();
+    //     if (!result.second)
+    //     {
+    //         ROS_INFO("create request failed..");
+    //         planning_result[count - 1] = false;
+    //         continue;
+    //     }
+    //     // Try to solve with a planner to verify feasibility
+    //     const auto &request = result.first;
+    //     // Add the planner so we know that the correct config exists
+    //     request->setPlanner(planner);
+    //     request->setAllowedPlanningTime(60);
+    //     request->setNumPlanningAttempts(2);
+    //     if (!request->setConfig(planner_name))
+    //         ROS_ERROR("Did not find planner %s", planner_name.c_str());
+    //     const auto &res = planner->plan(scene, request->getRequestConst());
 
-        //         // Visualize goal state.
-        //         rviz->visualizeState(request->getGoalConfiguration());
-        //         parser::waitForUser("Displaying goal state!");
+    //     if (res.error_code_.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
+    //     {
+    //         auto trajectory = std::make_shared<robowflex::Trajectory>(*res.trajectory_);
+    //         rviz->updateScene(scene);
+    //         // Visualize start state.
+    //         rviz->visualizeState(request->getStartConfiguration());
+    //         parser::waitForUser("Displaying initial state!");
 
-        //         // Visualize the trajectory.
-        //         rviz->updateTrajectory(trajectory->getTrajectory());
-        //         parser::waitForUser("Displaying The trajectory!");
-        //         planning_result[count - 1] = true;
-        //         ROS_INFO("process scene number: %d", count - 1);
-        //     }
-        //     // sampled_scene->toYAMLFile(generate_file_name);
-        //     parser::waitForUser("Displaying the scene!");
-    }
+    //         // Visualize goal state.
+    //         rviz->visualizeState(request->getGoalConfiguration());
+    //         parser::waitForUser("Displaying goal state!");
+
+    //         // Visualize the trajectory.
+    //         rviz->updateTrajectory(trajectory->getTrajectory());
+    //         parser::waitForUser("Displaying The trajectory!");
+    //         planning_result[count - 1] = true;
+    //         ROS_INFO("process scene number: %d", count - 1);
+    //     }
+    //     // sampled_scene->toYAMLFile(generate_file_name);
+    //     parser::waitForUser("Displaying the scene!");
+    // }
     return 0;
 }
