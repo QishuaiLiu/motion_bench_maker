@@ -88,7 +88,7 @@ bool getPoseResult(motion_bench_maker::getPoseResultRequest &req,
         bool ret = getPlanningResult(pg, object_pos, temp_scene);
         res.object_result[i] = ret;
     }
-    res.seq = req.header.seq;
+    res.seq = req.seq;
 
     return true;
 }

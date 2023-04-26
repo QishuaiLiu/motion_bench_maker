@@ -1,4 +1,4 @@
-Header header 
+uint32 seq 
 objectPos[] object_pos
 ---
 uint32 seq
