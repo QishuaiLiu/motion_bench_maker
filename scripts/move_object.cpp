@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 
     std::string exec_name = "move_object";
 
-    motion_bench_maker::objectPos object_pos;
+    ros::ServiceServer service = node.advertiseService("move_objects", getPoseResult);
 
     // Load ROS params
     size_t error = 0;
