@@ -15,6 +15,17 @@ find_package(catkin REQUIRED COMPONENTS ${CATKIN_SOURCES})
 #Octomap is not a a catkin package, a.k.a. it has to be found like this
 find_package(octomap)
 
+add_message_files(
+  FILES
+  objectPos.msg 
+  posePoint.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
 # needed to convert octomaps
 SET(OpenGL_GL_PREFERENCE "GLVND")
 find_package(gl_depth_sim)
@@ -22,7 +33,7 @@ find_package(gl_depth_sim)
 catkin_package(
     LIBRARIES ${LIBRARY_NAME}
     CATKIN_DEPENDS ${CATKIN_SOURCES}
-    DEPENDS
+    DEPENDS message_runtime
     INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include
     )
 
@@ -52,7 +63,6 @@ list(APPEND LIBRARIES
   gl_depth_sim::gl_depth_sim_interfaces
   yaml-cpp
   )
-
 
 include_directories(SYSTEM ${INCLUDES})
 link_directories(${catkin_LIBRARY_DIRS})
