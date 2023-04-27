@@ -17,18 +17,27 @@ from std_msgs.msg import String
 from motion_bench_maker.msg import *
 from motion_bench_maker.srv import *
 
+object_num = 7
+
 creator.create("FitnessMin", base.Fitness, weights=(-1.0, ))
 creator.create("Particle", list, fitness=creator.FitnessMin, speed=list, smin=None, smax=None, best=None)
+
+# initial pose for each object in one particle
+pos = numpy.array([[0.7, -0.058279], [0.5, 0.278224], [0.9, -0.190976], [0.7, 0.284192], [0.9, -0.010244], [0.7, 0.375406], [0.5, -0.233932]])
+
+pop_num = 10
+pop_pos = []  # total population pos of every particle
+
 
 def receiveObjectResult():
     rospy.wait_for_service('/move_objects')
     object_pos_request = getPoseResultRequest()
     object_pos_request.seq = 1
     temp_object_pos = objectPos()
-    for i in range(7):
+    for i in range(object_num):
         temp_pose_point = posePoint()
-        temp_pose_point.x = 1
-        temp_pose_point.y = 2
+        temp_pose_point.x = pos[i][0]
+        temp_pose_point.y = pos[i][1]
         temp_pose_point.z = 3
         temp_object_pos.object_pos.append(temp_pose_point)
     object_pos_request.pop_pos.append(temp_object_pos)
@@ -39,13 +48,11 @@ def receiveObjectResult():
     except rospy.ServiceException as e:
         print("Service call failed: %s" %e)
 
-
-
-def generate(size, pmin, pmax, smin, smax):
-    part = creator.Particle(numpy.random.uniform(pmin, pmax, size))
-    part.speed = numpy.random.uniform(smin, smax, size)
-    part.smin = smin
-    part.smax = smax
+def generate(obj_num, xy_min, xy_max, xy_smin, xy_smax):
+    part = creator.Particle(numpy.random.uniform(low = xy_min, high = xy_max, size = (obj_num, 2)))
+    part.speed = numpy.random.uniform(low = xy_smin, high = xy_smax, size = (obj_num, 2))
+    part.smin = xy_smin
+    part.smax = xy_smax
     return part
 
 
@@ -67,7 +74,12 @@ def updateParticle(part, best, phi1, phi2):
     part[:] = list(map(operator.add, part, part.speed))
 
 toolbox = base.Toolbox()
-toolbox.register("particle", generate, size=2, pmin=-6, pmax=6, smin=-3, smax=3)
+xy_min = [0, -0.45]
+xy_max = [1.0, 0.45]
+xy_smin = [-0.1, -0.1]
+xy_smax = [0.1, 0.1]
+
+toolbox.register("particle", generate, obj_num = 7, xy_min = [0, -0.45], xy_max=[1.0, 0.45], xy_smin = [-0.1, -0.1], smax = [0.1, 0.1])
 toolbox.register("population", tools.initRepeat, list, toolbox.particle)
 toolbox.register("update", updateParticle, phi1=2.0, phi2=2.0)
 toolbox.register("evaluate", benchmarks.h1)

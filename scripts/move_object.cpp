@@ -65,8 +65,8 @@ bool getPlanningResult(std::shared_ptr<ProblemGenerator> &pg, const std::vector<
     return result.second;
 }
 
-bool getPoseResult(motion_bench_maker::getPoseResultRequest &req,
-                   motion_bench_maker::getPoseResultResponse &res)
+bool getPopResult(motion_bench_maker::getPoseResultRequest &req,
+                  motion_bench_maker::getPoseResultResponse &res)
 {
     if (pg == nullptr || scene == nullptr)
         return false;
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 
     std::string exec_name = "move_object";
 
-    ros::ServiceServer service = node.advertiseService("/move_objects", getPoseResult);
+    ros::ServiceServer service = node.advertiseService("/move_objects", getPopResult);
 
     // Load ROS params
     size_t error = 0;
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
     }
     std::vector<bool> planning_result(total_scene_num);
 
-    scene->fromYAMLFile(scene_file_vec[3]);
+    scene->fromYAMLFile(scene_file_vec[4]);
 
     ros::spin();
 
