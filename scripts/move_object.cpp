@@ -70,23 +70,23 @@ bool getPoseResult(motion_bench_maker::getPoseResultRequest &req,
 {
     if (pg == nullptr || scene == nullptr)
         return false;
-    int size = req.object_pos.size();
-    std::vector<std::vector<Eigen::Vector2d>> object_poses(size);
-    res.object_result.resize(size);
-    std::vector<Eigen::Vector2d> object_pos;       // single particle
+    int size = req.pop_pos.size();
+    std::vector<std::vector<Eigen::Vector2d>> pop_poses(size);
+    res.pop_result.resize(size);
+    std::vector<Eigen::Vector2d> object_pos;    // single particle
 
-    for (int i = 0; i < object_poses.size(); ++i)  // for each particle
+    for (int i = 0; i < pop_poses.size(); ++i)  // for each particle
     {
         object_pos.clear();
         auto temp_scene = scene->deepCopy();
-        for (int j = 0; j < object_poses[i].size(); ++j)  // for each object in particle
+        for (int j = 0; j < req.pop_pos[i].object_pos.size(); ++j)  // for each object in particle
         {
-            auto &received_pos = req.object_pos[i].object_pos[j];
+            auto &received_pos = req.pop_pos[i].object_pos[j];
             Eigen::Vector2d pos = Eigen::Vector2d(received_pos.x, received_pos.y);
             object_pos.emplace_back(pos);
         }
         bool ret = getPlanningResult(pg, object_pos, temp_scene);
-        res.object_result[i] = ret;
+        res.pop_result[i] = ret;
     }
     res.seq = req.seq;
 
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 
     std::string exec_name = "move_object";
 
-    ros::ServiceServer service = node.advertiseService("move_objects", getPoseResult);
+    ros::ServiceServer service = node.advertiseService("/move_objects", getPoseResult);
 
     // Load ROS params
     size_t error = 0;

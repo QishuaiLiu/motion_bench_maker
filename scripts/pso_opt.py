@@ -11,8 +11,35 @@ from deap import benchmarks
 from deap import creator
 from deap import tools
 
+import rospy
+import sys
+from std_msgs.msg import String
+from motion_bench_maker.msg import *
+from motion_bench_maker.srv import *
+
 creator.create("FitnessMin", base.Fitness, weights=(-1.0, ))
 creator.create("Particle", list, fitness=creator.FitnessMin, speed=list, smin=None, smax=None, best=None)
+
+def receiveObjectResult():
+    rospy.wait_for_service('/move_objects')
+    object_pos_request = getPoseResultRequest()
+    object_pos_request.seq = 1
+    temp_object_pos = objectPos()
+    for i in range(7):
+        temp_pose_point = posePoint()
+        temp_pose_point.x = 1
+        temp_pose_point.y = 2
+        temp_pose_point.z = 3
+        temp_object_pos.object_pos.append(temp_pose_point)
+    object_pos_request.pop_pos.append(temp_object_pos)
+    try:
+        getObjectResult = rospy.ServiceProxy('move_objects', getPoseResult)
+        resp = getObjectResult(object_pos_request)
+        return resp
+    except rospy.ServiceException as e:
+        print("Service call failed: %s" %e)
+
+
 
 def generate(size, pmin, pmax, smin, smax):
     part = creator.Particle(numpy.random.uniform(pmin, pmax, size))
@@ -47,6 +74,10 @@ toolbox.register("evaluate", benchmarks.h1)
 
 
 def main():
+    rospy.init_node('pso_opt', anonymous=True)
+
+    print(receiveObjectResult())
+    print("begin pso")
     pop = toolbox.population(n=5)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
     stats.register("avg", numpy.mean)
@@ -69,7 +100,7 @@ def main():
             if not best or best.fitness < part.fitness:
                 best = creator.Particle(part)
                 best.fitness.values = part.fitness.values
-        print("current gen:", g, " best value is: ", best.fitness.values, " and best is: ", best)
+        # print("current gen:", g, " best value is: ", best.fitness.values, " and best is: ", best)
         for part in pop:
             toolbox.update(part, best)
 

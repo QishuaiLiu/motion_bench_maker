@@ -1,5 +1,5 @@
 uint32 seq 
-objectPos[] object_pos
+objectPos[] pop_pos
 ---
 uint32 seq
-bool[] object_result # for each particle, there exists a corresponding result
+bool[] pop_result # for each particle, there exists a corresponding result
