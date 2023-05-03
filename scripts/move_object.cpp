@@ -70,24 +70,20 @@ bool getPopResult(motion_bench_maker::getPoseResultRequest &req,
 {
     if (pg == nullptr || scene == nullptr)
         return false;
-    int size = req.pop_pos.size();
-    std::vector<std::vector<Eigen::Vector2d>> pop_poses(size);
-    res.pop_result.resize(size);
-    std::vector<Eigen::Vector2d> object_pos;    // single particle
+    std::vector<Eigen::Vector2d> particle_pose;
+    std::vector<Eigen::Vector2d> object_pos;  // single particle
 
-    for (int i = 0; i < pop_poses.size(); ++i)  // for each particle
+    object_pos.clear();
+    auto temp_scene = scene->deepCopy();
+    for (int j = 0; j < req.pop_pos.object_pos.size(); ++j)  // for each object in particle
     {
-        object_pos.clear();
-        auto temp_scene = scene->deepCopy();
-        for (int j = 0; j < req.pop_pos[i].object_pos.size(); ++j)  // for each object in particle
-        {
-            auto &received_pos = req.pop_pos[i].object_pos[j];
-            Eigen::Vector2d pos = Eigen::Vector2d(received_pos.x, received_pos.y);
-            object_pos.emplace_back(pos);
-        }
-        bool ret = getPlanningResult(pg, object_pos, temp_scene);
-        res.pop_result[i] = ret;
+        auto &received_pos = req.pop_pos.object_pos[j];
+        Eigen::Vector2d pos = Eigen::Vector2d(received_pos.x, received_pos.y);
+        object_pos.emplace_back(pos);
     }
+    bool ret = getPlanningResult(pg, object_pos, temp_scene);
+    res.pop_result = ret;
+
     res.seq = req.seq;
 
     return true;
