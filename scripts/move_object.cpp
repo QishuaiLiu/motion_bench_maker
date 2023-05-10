@@ -25,6 +25,7 @@ using namespace robowflex;
 const std::vector<std::string> obj_name{"Can2", "Can3", "Can4", "Can5", "Can7", "Can8", "Can9"};
 std::shared_ptr<ProblemGenerator> pg;
 std::shared_ptr<Scene> scene;
+std::shared_ptr<IO::RVIZHelper> rviz;
 namespace
 {
     std::vector<Eigen::Vector2d> getObjectPose(std::shared_ptr<Scene> scene)
@@ -55,6 +56,9 @@ namespace
         }
     }
 }  // namespace
+
+bool get_final_scene = false;
+std::vector<Eigen::Vector2d> final_scene_pos;
 
 bool getPlanningResult(std::shared_ptr<ProblemGenerator> &pg, const std::vector<Eigen::Vector2d> &pose,
                        std::shared_ptr<Scene> &scene)
@@ -89,6 +93,34 @@ bool getPopResult(motion_bench_maker::getPoseResultRequest &req,
     return true;
 }
 
+void getFinalScene(const motion_bench_maker::objectPos::ConstPtr &msg)
+{
+    ROS_INFO("get object pos");
+    if (msg == nullptr)
+    {
+        get_final_scene = false;
+        return;
+    }
+
+    int size = msg->object_pos.size();
+    final_scene_pos.reserve(size);
+    for (int i = 0; i < size; ++i)
+    {
+        Eigen::Vector2d pos;
+        pos.x() = msg->object_pos[i].x;
+        pos.y() = msg->object_pos[i].y;
+        final_scene_pos.emplace_back(pos);
+    }
+    get_final_scene = true;
+    rviz->updateScene(scene);
+    parser::waitForUser("Displaying original state!");
+    auto temp_scene = scene->deepCopy();
+    setObjectPose(final_scene_pos, temp_scene);
+    pg->updateScene(temp_scene);
+    rviz->updateScene(temp_scene);
+    parser::waitForUser("Displaying optimization state!");
+}
+
 int main(int argc, char **argv)
 {
     // Enables multiple instances running with the same name
@@ -100,6 +132,8 @@ int main(int argc, char **argv)
     std::string exec_name = "move_object";
 
     ros::ServiceServer service = node.advertiseService("/move_objects", getPopResult);
+
+    ros::Subscriber final_scene_sub = node.subscribe("/final_scene", 100, getFinalScene);
 
     // Load ROS params
     size_t error = 0;
@@ -115,7 +149,7 @@ int main(int argc, char **argv)
     auto robot = std::make_shared<Robot>("RoboCop");
     robot->initializeFromYAML(robot_file);
     robot->loadKinematics(planning_group);
-    auto rviz = std::make_shared<IO::RVIZHelper>(robot);
+    rviz = std::make_shared<IO::RVIZHelper>(robot);
 
     scene = std::make_shared<Scene>(robot);
     auto start_state = std::make_shared<robot_state::RobotState>(*robot->getScratchStateConst());

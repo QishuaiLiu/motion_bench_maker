@@ -60,8 +60,8 @@ def generate(obj_num, xy_min, xy_max, xy_smin, xy_smax):
 
 
 def updateParticle(part, best, phi1, phi2):
-    u1 = (random.uniform(0, phi1) for _ in range(len(part)))
-    u2 = (random.uniform(0, phi2) for _ in range(len(part)))
+    u1 = (random.uniform(0.5, phi1) for _ in range(len(part)))
+    u2 = (random.uniform(0.5, phi2) for _ in range(len(part)))
     
     v_u1 = map(operator.mul, u1, map(operator.sub, part.best, part))
     v_u2 = map(operator.mul, u2, map(operator.sub, best, part))
@@ -77,12 +77,12 @@ def updateParticle(part, best, phi1, phi2):
 
 def obj_func(individual):
     feasible = receiveObjectResult(individual)
-    print("feasible is:", feasible.pop_result)
-    cost = sum([10 * numpy.linalg.norm(x) for x in map(operator.sub, individual, pos)])
-    if feasible.pop_result:
-        return cost,
-    else:
-        return cost + 10000,
+    cost = sum([100 * numpy.linalg.norm(x) for x in map(operator.sub, individual, pos)])
+    if not feasible.pop_result:
+        cost = cost + 10000
+    print("feasible is:", feasible.pop_result, "cost is:", round(cost, 3))
+    return cost,
+
 
 toolbox = base.Toolbox()
 xy_min = [0, -0.45]
@@ -93,7 +93,7 @@ obj_num = 7
 
 toolbox.register("particle", generate, obj_num, xy_min = [0.2, -0.35], xy_max=[0.9, 0.35], xy_smin = [-0.1, -0.1], xy_smax = [0.1, 0.1])
 toolbox.register("population", tools.initRepeat, list, toolbox.particle)
-toolbox.register("update", updateParticle, phi1=0.5, phi2=0.5)
+toolbox.register("update", updateParticle, phi1=1.0, phi2=1.0)
 toolbox.register("evaluate", obj_func)
 
 
@@ -112,12 +112,12 @@ def main():
     logbook = tools.Logbook()
     logbook.header = ["gen", "evals"] + stats.fields
 
-    GEN = 1000
+    GEN = 3000
     best = None
 
     for g in range(GEN):
         for part in pop:
-            print(toolbox.evaluate(part))
+            # print(toolbox.evaluate(part))
             part.fitness.values = toolbox.evaluate(part)
             if not part.best or part.best.fitness < part.fitness:
                 part.best = creator.Particle(part)
@@ -135,6 +135,20 @@ def main():
     return pop, logbook, best
 
 if __name__ == "__main__":
-    main()
-
+    res = main()
+    best = res[2]
+    print(best, best.fitness.values)
+    pub = rospy.Publisher('/final_scene', objectPos, queue_size = 10)
+    rate = rospy.Rate(1)
+    while not rospy.is_shutdown():
+        final_scene_pos = objectPos()
+        for i in range(len(best)):
+            temp_pose_point = posePoint()
+            temp_pose_point.x = best[i][0]
+            temp_pose_point.y = best[i][1]
+            temp_pose_point.z = 1
+            final_scene_pos.object_pos.append(temp_pose_point)
+        pub.publish(final_scene_pos)
+        # print("publish best pos already")
+        rate.sleep()
 
