@@ -60,11 +60,15 @@ def generate(obj_num, xy_min, xy_max, xy_smin, xy_smax):
 
 
 def updateParticle(part, best, phi1, phi2):
-    u1 = (random.uniform(0.5, phi1) for _ in range(len(part)))
-    u2 = (random.uniform(0.5, phi2) for _ in range(len(part)))
+    u1 = (random.uniform(0.1, phi1) for _ in range(len(part)))
+    u2 = (random.uniform(0.3, phi2) for _ in range(len(part)))
     
     v_u1 = map(operator.mul, u1, map(operator.sub, part.best, part))
     v_u2 = map(operator.mul, u2, map(operator.sub, best, part))
+    # x1 = v_u1
+    # x2 = v_u2
+    # print('v1', list(x1))
+    # print('v2', list(x2))
     part.speed = list(map(operator.add ,part.speed, map(operator.add, v_u1, v_u2)))
 
     for i, speed in enumerate(part.speed):
@@ -77,7 +81,7 @@ def updateParticle(part, best, phi1, phi2):
 
 def obj_func(individual):
     feasible = receiveObjectResult(individual)
-    cost = sum([100 * numpy.linalg.norm(x) for x in map(operator.sub, individual, pos)])
+    cost = sum([100 * numpy.linalg.norm(x, 1) for x in map(operator.sub, individual, pos)])
     if not feasible.pop_result:
         cost = cost + 10000
     print("feasible is:", feasible.pop_result, "cost is:", round(cost, 3))
@@ -93,7 +97,7 @@ obj_num = 7
 
 toolbox.register("particle", generate, obj_num, xy_min = [0.2, -0.35], xy_max=[0.9, 0.35], xy_smin = [-0.1, -0.1], xy_smax = [0.1, 0.1])
 toolbox.register("population", tools.initRepeat, list, toolbox.particle)
-toolbox.register("update", updateParticle, phi1=1.0, phi2=1.0)
+toolbox.register("update", updateParticle, phi1 = 0.3, phi2 = 0.6)
 toolbox.register("evaluate", obj_func)
 
 
@@ -130,7 +134,7 @@ def main():
             toolbox.update(part, best)
 
         logbook.record(gen = g, evals=len(pop), **stats.compile(pop))
-        print(logbook.stream)
+        print(logbook.stream, "best_fit:", round(best.fitness.values[0], 3))
 
     return pop, logbook, best
 

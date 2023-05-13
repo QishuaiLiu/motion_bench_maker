@@ -14,7 +14,10 @@ list(APPEND CATKIN_SOURCES
 find_package(catkin REQUIRED COMPONENTS ${CATKIN_SOURCES})
 #Octomap is not a a catkin package, a.k.a. it has to be found like this
 find_package(octomap)
+find_package(NLopt)
 
+include_directories(/usr/local/include)
+link_directories(/usr/local/bin)
 add_message_files(
   FILES
   objectPos.msg 
@@ -57,6 +60,7 @@ list(APPEND INCLUDES
   ${EIGEN3_INCLUDE_DIRS}
   ${OCTOMAP_INCLUDE_DIRS}
   ${gl_depth_sim_INCLUDE_DIRS}
+  ${NLOPT_INCLUDE_DIRS}
   )
 
 list(APPEND LIBRARIES
@@ -110,6 +114,14 @@ add_dependencies(load_problem ${catkin_EXPORTED_TARGETS})
 add_executable(move_object scripts/move_object.cpp)
 target_link_libraries(move_object ${LIBRARY_NAME})
 add_dependencies(move_object ${catkin_EXPORTED_TARGETS})
+
+add_executable(move_object_nlp scripts/move_object_nlp.cpp)
+target_link_libraries(move_object_nlp ${LIBRARY_NAME} ipopt)
+add_dependencies(move_object_nlp ${catkin_EXPORTED_TARGETS})
+
+add_executable(move_object_nlopt scripts/move_object_nlopt.cpp)
+target_link_libraries(move_object_nlopt ${LIBRARY_NAME} ${NLOPT_LIBRARIES})
+add_dependencies(move_object_nlopt ${catkin_EXPORTED_TARGETS})
 
 #add_executable(benchmark_simple scripts/benchmark_simple.cpp)
 #target_link_libraries(benchmark_simple ${LIBRARY_NAME})

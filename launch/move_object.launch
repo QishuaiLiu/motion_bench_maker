@@ -19,7 +19,7 @@
   <arg name="config" default="visualize" />
 
   <!-- Start the create dataset node -->
-  <node  name="load_problem" launch-prefix="$(arg launch_prefix)" pkg="motion_bench_maker" type="move_object" output="screen" required = "true" > 
+  <node  name="load_problem" launch-prefix="$(arg launch_prefix)" pkg="motion_bench_maker" type="move_object_nlopt" output="screen" required = "true" > 
     
     <param name="robot" value="$(arg robot)" />
     <param name="scene" value="$(arg scene)" />
