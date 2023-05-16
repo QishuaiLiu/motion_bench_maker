@@ -28,6 +28,7 @@ pos = numpy.array([[0.7, -0.058279], [0.5, 0.278224], [0.9, -0.190976], [0.7, 0.
 pop_num = 10
 pop_pos = []  # total population pos of every particle
 
+pub = rospy.Publisher('/final_scene', objectPos, queue_size = 10)
 
 def receiveObjectResult(particle):
     rospy.wait_for_service('/move_objects')
@@ -77,7 +78,22 @@ def updateParticle(part, best, phi1, phi2):
                 part.speed[i][j] = math.copysign(part.smin[j], speed[j])
             elif abs(speed[j]) > part.smax[j]:
                 part.speed[i][j] = math.copysign(part.smax[j], speed[j])
+            if j == 0:
+                flag = True
+                while flag:
+                    if part[i][j] + part.speed[i][j] < 0.45 or part[i][j] + part.speed[i][j] > 1.0:
+                        part.speed[i][j] = part.speed[i][j] / 2
+                    else:
+                        flag = False
+            elif j == 1:
+                flag = True
+                while flag:
+                    if part[i][j] + part.speed[i][j] < -0.45 or part[i][j] + part.speed[i][j] > 0.45:
+                        part.speed[i][j] = part.speed[i][j] / 2
+                    else:
+                        flag = False
     part[:] = list(map(operator.add, part, part.speed))
+
 
 def obj_func(individual):
     feasible = receiveObjectResult(individual)
@@ -95,7 +111,7 @@ xy_smin = [-0.1, -0.1]
 xy_smax = [0.1, 0.1]
 obj_num = 7
 
-toolbox.register("particle", generate, obj_num, xy_min = [0.2, -0.35], xy_max=[0.9, 0.35], xy_smin = [-0.1, -0.1], xy_smax = [0.1, 0.1])
+toolbox.register("particle", generate, obj_num, xy_min = [0.45, -0.35], xy_max=[1.0, 0.35], xy_smin = [-0.05, -0.05], xy_smax = [0.05, 0.05])
 toolbox.register("population", tools.initRepeat, list, toolbox.particle)
 toolbox.register("update", updateParticle, phi1 = 0.3, phi2 = 0.6)
 toolbox.register("evaluate", obj_func)
@@ -106,7 +122,7 @@ def main():
 
     # print(receiveObjectResult())
     print("begin pso")
-    pop = toolbox.population(n=5)
+    pop = toolbox.population(n=150)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
     stats.register("avg", numpy.mean)
     stats.register("std", numpy.std)
@@ -116,7 +132,7 @@ def main():
     logbook = tools.Logbook()
     logbook.header = ["gen", "evals"] + stats.fields
 
-    GEN = 3000
+    GEN = 100
     best = None
 
     for g in range(GEN):
@@ -132,9 +148,20 @@ def main():
         # print("current gen:", g, " best value is: ", best.fitness.values, " and best is: ", best)
         for part in pop:
             toolbox.update(part, best)
+        
+        # final_scene_pos = objectPos()
+        # print('send out best for visual')
+        # for i in range(len(best)):
+        #     temp_pose_point = posePoint()
+        #     temp_pose_point.x = best[i][0]
+        #     temp_pose_point.y = best[i][1]
+        #     temp_pose_point.z = 1
+        #     final_scene_pos.object_pos.append(temp_pose_point)
+        # pub.publish(final_scene_pos)
 
         logbook.record(gen = g, evals=len(pop), **stats.compile(pop))
         print(logbook.stream, "best_fit:", round(best.fitness.values[0], 3))
+        print(best)
 
     return pop, logbook, best
 
@@ -142,7 +169,6 @@ if __name__ == "__main__":
     res = main()
     best = res[2]
     print(best, best.fitness.values)
-    pub = rospy.Publisher('/final_scene', objectPos, queue_size = 10)
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
         final_scene_pos = objectPos()

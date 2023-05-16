@@ -65,6 +65,7 @@ bool getPlanningResult(std::shared_ptr<ProblemGenerator> &pg, const std::vector<
 {
     setObjectPose(pose, scene);
     pg->updateScene(scene);
+    // rviz->updateScene(scene);
     auto result = pg->createRandomRequest();
     return result.second;
 }
@@ -117,6 +118,8 @@ void getFinalScene(const motion_bench_maker::objectPos::ConstPtr &msg)
     auto temp_scene = scene->deepCopy();
     setObjectPose(final_scene_pos, temp_scene);
     pg->updateScene(temp_scene);
+    int ret = getPlanningResult(pg, final_scene_pos, temp_scene);
+    ROS_INFO("........................ret result is: %d", (int)ret);
     rviz->updateScene(temp_scene);
     parser::waitForUser("Displaying optimization state!");
 }
@@ -191,6 +194,24 @@ int main(int argc, char **argv)
     scene->fromYAMLFile(scene_file_vec[4]);
 
     ros::spin();
+    // while (true)
+    // {
+    //     rviz->updateScene(scene);
+    //     parser::waitForUser("display the scene");
+    //     std::vector<Eigen::Vector2d> object_pos(7);
+    //     object_pos[0] << 0.69915537, -0.08294566;
+    //     object_pos[1] << 0.49807742, 0.27463609;
+    //     object_pos[2] << 0.90291438, -0.18692278;
+    //     object_pos[3] << 0.71228151, 0.28583853;
+    //     object_pos[4] << 0.908616, -0.0221888;
+    //     object_pos[5] << 0.70149273, 0.37695294;
+    //     object_pos[6] << 0.49009288, -0.23345044;
+    //     auto temp_scene = scene->deepCopy();
+    //     auto ret = getPlanningResult(pg, object_pos, temp_scene);
+    //     rviz->updateScene(temp_scene);
+
+    //     parser::waitForUser("final scene");
+    // }
 
     // while (true)
     // {
@@ -200,9 +221,23 @@ int main(int argc, char **argv)
     //     auto pose = getObjectPose(scene);
     //     for (int i = 0; i < pose.size(); ++i)
     //     {
-    //         pose[i] += Eigen::Vector2d::Ones() * 0.02;
+    //         std::cout << "pose x: " << pose[i][0] << " y is: " << pose[i][1] << std::endl;
+    //         // pose[i] += Eigen::Vector2d::Ones() * 0.02;
+    //         Eigen::Vector2d temp;
+    //         temp << 0.02, 0;
+    //         pose[i] += temp;
     //     }
     //     setObjectPose(pose, scene);
+
+    //     auto obj = scene->getCollisionObjects();
+    //     std::vector<std::string> obj_name_new{"Can1", "Can2", "Can3", "Can4", "Can5",
+    //                                           "Can6", "Can7", "Can8", "Can9"};
+    //     for (int i = 0; i < obj_name_new.size(); ++i)
+    //     {
+    //         auto obj_pose = scene->getObjectPose(obj_name_new[i]).translation().head<2>();
+    //         // auto obj_pose = scene->getFramePose(obj_name_new[i]).translation().head<2>();
+    //         ROS_INFO("after pose x: %.3f, y is: %.3f", obj_pose[0], obj_pose[1]);
+    //     }
 
     // auto request = std::make_shared<MotionRequestBuilder>(robot);
     // request->fromYAMLFile(request_file);
