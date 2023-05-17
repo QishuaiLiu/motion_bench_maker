@@ -99,7 +99,7 @@ int main(int argc, char **argv)
         auto result = pg->createRandomRequest();
         if (!result.second)
         {
-            ROS_INFO("create request failed..");
+            ROS_INFO("create request failed.. for count is: %d", count);
             planning_result[count - 1] = false;
             continue;
         }

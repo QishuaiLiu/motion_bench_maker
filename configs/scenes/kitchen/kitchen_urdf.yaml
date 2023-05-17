@@ -51,5 +51,5 @@ world:
         - type: cylinder
           dimensions: [0.14, 0.03]
       primitive_poses:
-        - position: [0.45, 0, 0.95]
+        - position: [0.6, -0.3, 0.95]
           orientation: [0, 0, 0, 1]
