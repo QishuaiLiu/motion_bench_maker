@@ -1,0 +1,55 @@
+world:
+  collision_objects:
+    - id: cupboard
+      meshes:
+        - resource: package://motion_bench_maker/configs/scenes/kitchen/meshes/cupboard.stl
+          dimensions: [1, 1, 1]
+      mesh_poses:
+        - position: [0, 0, 0]
+          orientation: [0, 0, 0, 1]
+    - id: cupboard_door_l
+      meshes:
+        - resource: package://motion_bench_maker/configs/scenes/kitchen/meshes/cupboard_door_l.stl
+          dimensions: [1, 1, 1]
+      mesh_poses:
+        - position: [0.44637, 0.54793, 1.6839]
+          orientation: [0, 0, -0.416717946214281, 0.9090358371939753]
+    - id: cupboard_door_r
+      meshes:
+        - resource: package://motion_bench_maker/configs/scenes/kitchen/meshes/cupboard_door_r.stl
+          dimensions: [1, 1, 1]
+      mesh_poses:
+        - position: [0.44637, -1.1497, 1.6839]
+          orientation: [0, 0, 0.9900215392378352, 0.1409161163428352]
+    - id: dishwasher_door
+      meshes:
+        - resource: package://motion_bench_maker/configs/scenes/kitchen/meshes/dishwasher_door.stl
+          dimensions: [1, 1, 1]
+      mesh_poses:
+        - position: [0.33637, -0.72851, 0.030766]
+          orientation: [0, -0.03821480677823245, 0, 0.9992695474910173]
+    - id: kitchen_counter
+      meshes:
+        - resource: package://motion_bench_maker/configs/scenes/kitchen/meshes/kitchen_counter.stl
+          dimensions: [1, 1, 1]
+      mesh_poses:
+        - position: [0, 0, 0]
+          orientation: [0, 0, 0, 1]
+    - header:
+        frame_id: base_link
+      id: Can1
+      primitives:
+        - type: cylinder
+          dimensions: [0.14, 0.03]
+      primitive_poses:
+        - position: [0.5, 0.1, 1.48]
+          orientation: [0, 0, 0, 1]
+    - header:
+        frame_id: base_link
+      id: Can6
+      primitives:
+        - type: cylinder
+          dimensions: [0.14, 0.03]
+      primitive_poses:
+        - position: [0.45, 0, 0.95]
+          orientation: [0, 0, 0, 1]
