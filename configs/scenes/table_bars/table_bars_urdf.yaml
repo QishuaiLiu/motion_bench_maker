@@ -1,0 +1,23 @@
+world:
+  collision_objects:
+    - id: shelves
+      meshes:
+        - resource: package://motion_bench_maker/configs/scenes/table_bars/meshes/shelves.stl
+          dimensions: [1, 1, 1]
+      mesh_poses:
+        - position: [0, 0, 0]
+          orientation: [0, 0, 0, 1]
+    - id: left_bars
+      meshes:
+        - resource: package://motion_bench_maker/configs/scenes/table_bars/meshes/left_bars.stl
+          dimensions: [1, 1, 1]
+      mesh_poses:
+        - position: [0, 0.1886502819135785, 0]
+          orientation: [0, 0, 0, 1]
+    - id: right_bars
+      meshes:
+        - resource: package://motion_bench_maker/configs/scenes/table_bars/meshes/right_bars.stl
+          dimensions: [1, 1, 1]
+      mesh_poses:
+        - position: [0, -0.1222013697726652, 0]
+          orientation: [0, 0, 0, 1]

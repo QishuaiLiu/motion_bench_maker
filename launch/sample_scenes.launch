@@ -6,12 +6,20 @@
   <arg if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
 
   <!-- Arguments for ROS parameters -->
+  <!--shelf env-->
   <!-- <arg name="robot" default="package://motion_bench_maker/configs/robots/fetch.yaml" /> -->
   <!-- <arg name="scene" default="package://motion_bench_maker/configs/scenes/bookshelf/scene_tall.yaml" /> -->
   <!-- <arg name="variation" default="package://motion_bench_maker/configs/scenes/bookshelf/variation_tall.yaml" /> -->
-  <arg name="robot" default="package://motion_bench_maker/configs/robots/fetch.yaml" />
+
+  <!-- kitchen env -->
+  <!-- <arg name="robot" default="package://motion_bench_maker/configs/robots/fetch.yaml" />
   <arg name="scene" default="package://motion_bench_maker/configs/scenes/kitchen/kitchen_urdf.yaml" />
-  <arg name="variation" default="package://motion_bench_maker/configs/scenes/kitchen/variation.yaml" />
+  <arg name="variation" default="package://motion_bench_maker/configs/scenes/kitchen/variation.yaml" /> -->
+
+  <arg name="robot" default="package://motion_bench_maker/configs/robots/fetch.yaml" />
+  <arg name="scene" default="package://motion_bench_maker/configs/scenes/table/scene_table.yaml" />
+  <arg name="variation" default="package://motion_bench_maker/configs/scenes/table/variation_table.yaml" />
+
 
   <!-- Rviz Parameters -->
   <arg name="config" default="visualize" />
