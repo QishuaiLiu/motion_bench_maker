@@ -109,7 +109,7 @@ add_dependencies(load_problem ${catkin_EXPORTED_TARGETS})
 
 add_executable(move_object scripts/move_object.cpp)
 target_link_libraries(move_object ${LIBRARY_NAME})
-add_dependencies(move_object ${catkin_EXPORTED_TARGETS})
+add_dependencies(move_object ${catkin_EXPORTED_TARGETS} motion_bench_maker_generate_messages_cpp)
 
 #add_executable(benchmark_simple scripts/benchmark_simple.cpp)
 #target_link_libraries(benchmark_simple ${LIBRARY_NAME})
