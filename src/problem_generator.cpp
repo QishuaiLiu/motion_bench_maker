@@ -338,16 +338,22 @@ bool ProblemGenerator::setStateFromQuery(const Query &query)
     // Get a root link pose.
     const auto &root_name = robot_->getModelConst()->getRootLinkName();
     const auto &root_pose = robot_->getLinkTF(root_name);
-
+    ROS_INFO("111111111111 root name is: %s, pose is: \n", root_name.c_str());
+    std::cout << root_pose.matrix();
     for (unsigned int i = 0; i < query.object_queries.size(); i++)
     {
         const auto &oq = query.object_queries[i];
 
         // Get object pose.
         const auto &object_pose = scene_->getObjectPose(oq.object);
+        ROS_INFO("get first object pose: \n");
+        std::cout << object_pose.matrix();
 
         // Transform from root link to object.
         const auto &root_to_query_object = root_pose * object_pose;
+        ROS_INFO("first object pose is: \n");
+
+        std::cout << root_to_query_object.matrix();
 
         // Get query pose with respect to root link.
         const auto &query_pose = root_to_query_object * oq.offset_pose;
