@@ -22,7 +22,7 @@
 #include <robowflex_ompl/ompl_interface.h>
 
 using namespace robowflex;
-const std::vector<std::string> obj_name{"Can2", "Can3", "Can4", "Can5", "Can7", "Can8", "Can9"};
+const std::vector<std::string> obj_name{"Object1", "Object2", "Object3", "Object4", "Object5"};
 std::shared_ptr<ProblemGenerator> pg;
 std::shared_ptr<Scene> scene;
 std::shared_ptr<IO::RVIZHelper> rviz;
@@ -43,13 +43,19 @@ namespace
         return pose;
     }
 
-    void setObjectPose(const std::vector<Eigen::Vector2d> &pose, std::shared_ptr<Scene> scene)
+    void setObjectPose(const std::vector<Eigen::Vector3d> &pose, std::shared_ptr<Scene> scene)
     {
         for (int i = 0; i < obj_name.size(); ++i)
         {
             auto cur_obj_pose = scene->getObjectPose(obj_name[i]);
             auto temp_pose = cur_obj_pose;
-            temp_pose.translation().head<2>() = pose[i];
+            temp_pose.translation().head<2>() = pose[i].head<2>();
+            Eigen::Vector3d angles = Eigen::Vector3f(0, 0, pose[i][2]);
+            Eigen::Quaterniond rot_matrix = Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitX())    //
+                                            * Eigen::AngleAxisd(angles[1], Eigen::Vector3d::UnitY())  //
+                                            * Eigen::AngleAxisd(angles[2], Eigen::Vector3d::UnitZ());
+
+            temp_pose.linear() = rot_matrix.toRotationMatrix();
             auto new_obj_pose = temp_pose * cur_obj_pose.inverse();
 
             scene->moveObjectGlobal(obj_name[i], new_obj_pose);

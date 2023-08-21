@@ -7,11 +7,16 @@
 
   <!-- Arguments for ROS parameters -->
   <arg name="robot" default="package://motion_bench_maker/configs/robots/fetch.yaml" />
-  <arg name="scene" default="package://motion_bench_maker/configs/scenes/bookshelf/test/" />
+  <!-- <arg name="scene" default="package://motion_bench_maker/configs/scenes/bookshelf/test/" />
   <arg name="request_file" default="package://motion_bench_maker/configs/scenes/bookshelf/hard_queries_small.yaml" />
   <arg name="planning_group" default="arm_with_torso" />
   <arg name="ompl_config"  default="package://motion_bench_maker/configs/ompl/ompl_planning_fetch.yaml" />
-  <arg name="planner_name" default="RRTConnect_BOOKSHELF_SMALL"/>
+  <arg name="planner_name" default="RRTConnect_BOOKSHELF_SMALL"/> -->
+  <arg name="scene" default="package://motion_bench_maker/configs/scenes/table/test/" />
+  <arg name="request_file" default="package://motion_bench_maker/configs/scenes/table/queries_under_pick_table.yaml" />
+  <arg name="planning_group" default="arm_with_torso" />
+  <arg name="ompl_config"  default="package://motion_bench_maker/configs/ompl/ompl_planning_fetch.yaml" />
+  <arg name="planner_name" default="RRTConnect_TABLE_PICK"/>
 
 
   <!-- <arg name="variation" default="package://motion_bench_maker/configs/scenes/bookshelf/variation_tall.yaml" /> -->

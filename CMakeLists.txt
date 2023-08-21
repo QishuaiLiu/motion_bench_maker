@@ -19,6 +19,8 @@ add_message_files(
   FILES
   objectPos.msg 
   posePoint.msg
+  tableObjectPos.msg
+  tablePosePoint.msg
 )
 
 add_service_files(
