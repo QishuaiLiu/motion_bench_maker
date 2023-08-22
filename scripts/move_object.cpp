@@ -36,6 +36,17 @@ namespace
 
         for (int i = 0; i < obj_name.size(); ++i)
         {
+            // auto test_pose = scene->getObjectPose(obj_name[i]);
+            // get the origin coord
+            // Eigen::Isometry3d temp_pose = Eigen::Isometry3d::Identity();
+            // temp_pose.translation() = Eigen::Vector3d(1.35, 0, 0.85);
+            // get the shape coord
+            // Eigen::Matrix4d test_again = test_pose.matrix() * temp_pose.matrix().inverse();
+            // get the quaternion for the shape coord
+            // Eigen::Quaterniond q(test_again.block<3, 3>(0, 0));
+            // std::cout << "quaternion is: " << q.x() << " " << q.y() << " " << q.z() << " " << q.w()
+            //           << std::endl;
+
             auto obj_pose = scene->getObjectPose(obj_name[i]).translation().head<2>();
             pose.emplace_back(obj_pose);
         }
@@ -89,7 +100,7 @@ bool getPopResult(motion_bench_maker::getTablePoseResultRequest &req,
     for (int j = 0; j < req.pop_pos.object_pos.size(); ++j)  // for each object in particle
     {
         auto &received_pos = req.pop_pos.object_pos[j];
-        Eigen::Vector3d pos = Eigen::Vector3d(received_pos.x, received_pos.y, 0);
+        Eigen::Vector3d pos = Eigen::Vector3d(received_pos.x, received_pos.y, received_pos.theta);
         object_pos.emplace_back(pos);
     }
     bool ret = getPlanningResult(pg, object_pos, temp_scene);
@@ -234,7 +245,8 @@ int main(int argc, char **argv)
     //         // pose[i] += Eigen::Vector2d::Ones() * 0.02;
     //         Eigen::Vector3d temp;
     //         temp << 0.1, 0.1, 0.01;
-    //         new_pose[i] = Eigen::Vector3d(pose[i][0], pose[i][1], 0) + temp;
+    //         // new_pose[i] = Eigen::Vector3d(pose[i][0], pose[i][1], 0) + temp;
+    //         new_pose[i] = Eigen::Vector3d(pose[i][0], pose[i][1], 0);
     //     }
     //     auto temp_scene = scene->deepCopy();
     //     setObjectPose(new_pose, temp_scene);
