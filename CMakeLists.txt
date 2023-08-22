@@ -26,6 +26,7 @@ add_message_files(
 add_service_files(
   FILES
   getPoseResult.srv
+  getTablePoseResult.srv
 )
 
 generate_messages(

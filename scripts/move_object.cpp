@@ -16,7 +16,7 @@
 #include <robowflex_library/builder.h>
 #include <motion_bench_maker/problem_generator.h>
 
-#include <motion_bench_maker/getPoseResult.h>
+#include <motion_bench_maker/getTablePoseResult.h>
 
 // Robowflex ompl
 #include <robowflex_ompl/ompl_interface.h>
@@ -50,7 +50,7 @@ namespace
             auto cur_obj_pose = scene->getObjectPose(obj_name[i]);
             auto temp_pose = cur_obj_pose;
             temp_pose.translation().head<2>() = pose[i].head<2>();
-            Eigen::Vector3d angles = Eigen::Vector3f(0, 0, pose[i][2]);
+            Eigen::Vector3d angles = Eigen::Vector3d(0, 0, pose[i][2]);
             Eigen::Quaterniond rot_matrix = Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitX())    //
                                             * Eigen::AngleAxisd(angles[1], Eigen::Vector3d::UnitY())  //
                                             * Eigen::AngleAxisd(angles[2], Eigen::Vector3d::UnitZ());
@@ -64,9 +64,9 @@ namespace
 }  // namespace
 
 bool get_final_scene = false;
-std::vector<Eigen::Vector2d> final_scene_pos;
+std::vector<Eigen::Vector3d> final_scene_pos;
 
-bool getPlanningResult(std::shared_ptr<ProblemGenerator> &pg, const std::vector<Eigen::Vector2d> &pose,
+bool getPlanningResult(std::shared_ptr<ProblemGenerator> &pg, const std::vector<Eigen::Vector3d> &pose,
                        std::shared_ptr<Scene> &scene)
 {
     setObjectPose(pose, scene);
@@ -76,20 +76,20 @@ bool getPlanningResult(std::shared_ptr<ProblemGenerator> &pg, const std::vector<
     return result.second;
 }
 
-bool getPopResult(motion_bench_maker::getPoseResultRequest &req,
-                  motion_bench_maker::getPoseResultResponse &res)
+bool getPopResult(motion_bench_maker::getTablePoseResultRequest &req,
+                  motion_bench_maker::getTablePoseResultResponse &res)
 {
     if (pg == nullptr || scene == nullptr)
         return false;
     std::vector<Eigen::Vector2d> particle_pose;
-    std::vector<Eigen::Vector2d> object_pos;  // single particle
+    std::vector<Eigen::Vector3d> object_pos;  // single particle
 
     object_pos.clear();
     auto temp_scene = scene->deepCopy();
     for (int j = 0; j < req.pop_pos.object_pos.size(); ++j)  // for each object in particle
     {
         auto &received_pos = req.pop_pos.object_pos[j];
-        Eigen::Vector2d pos = Eigen::Vector2d(received_pos.x, received_pos.y);
+        Eigen::Vector3d pos = Eigen::Vector3d(received_pos.x, received_pos.y, 0);
         object_pos.emplace_back(pos);
     }
     bool ret = getPlanningResult(pg, object_pos, temp_scene);
@@ -113,9 +113,10 @@ void getFinalScene(const motion_bench_maker::objectPos::ConstPtr &msg)
     final_scene_pos.reserve(size);
     for (int i = 0; i < size; ++i)
     {
-        Eigen::Vector2d pos;
+        Eigen::Vector3d pos;
         pos.x() = msg->object_pos[i].x;
         pos.y() = msg->object_pos[i].y;
+        pos[2] = 0.0;
         final_scene_pos.emplace_back(pos);
     }
     get_final_scene = true;
@@ -225,15 +226,20 @@ int main(int argc, char **argv)
     //     // generateNewScene(getSceneFolder(file_name));
     //     parser::waitForUser("Displaying the scene!");
     //     auto pose = getObjectPose(scene);
+    //     std::vector<Eigen::Vector3d> new_pose;
+    //     new_pose.resize(pose.size());
     //     for (int i = 0; i < pose.size(); ++i)
     //     {
     //         std::cout << "pose x: " << pose[i][0] << " y is: " << pose[i][1] << std::endl;
     //         // pose[i] += Eigen::Vector2d::Ones() * 0.02;
-    //         Eigen::Vector2d temp;
-    //         temp << 0.02, 0;
-    //         pose[i] += temp;
+    //         Eigen::Vector3d temp;
+    //         temp << 0.1, 0.1, 0.01;
+    //         new_pose[i] = Eigen::Vector3d(pose[i][0], pose[i][1], 0) + temp;
     //     }
-    //     setObjectPose(pose, scene);
+    //     auto temp_scene = scene->deepCopy();
+    //     setObjectPose(new_pose, temp_scene);
+    //     rviz->updateScene(temp_scene);
+    //     parser::waitForUser("displaying the temp scene.");
 
     //     auto obj = scene->getCollisionObjects();
     //     std::vector<std::string> obj_name_new{"Can1", "Can2", "Can3", "Can4", "Can5",
