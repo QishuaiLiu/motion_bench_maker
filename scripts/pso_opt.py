@@ -17,35 +17,35 @@ from std_msgs.msg import String
 from motion_bench_maker.msg import *
 from motion_bench_maker.srv import *
 
-object_num = 7
+object_num = 5
 
 creator.create("FitnessMin", base.Fitness, weights=(-1.0, ))
 creator.create("Particle", list, fitness=creator.FitnessMin, speed=list, smin=None, smax=None, best=None)
 
 # initial pose for each object in one particle
-pos = numpy.array([[0.7, -0.058279], [0.5, 0.278224], [0.9, -0.190976], [0.7, 0.284192], [0.9, -0.010244], [0.7, 0.375406], [0.5, -0.233932]])
+pos = numpy.array([[0.7, -0.058279, -0.358869], [0.5, 0.278224, -0.6166521], [0.9, -0.190976, 1.1623865], [0.7, 0.284192, 1.4096248], [0.9, -0.010244, -0.0733565]])
 
 pop_num = 10
 pop_pos = []  # total population pos of every particle
 
-pub = rospy.Publisher('/final_scene', objectPos, queue_size = 10)
+pub = rospy.Publisher('/final_scene', tableObjectPos, queue_size = 10)
 
 def receiveObjectResult(particle):
     rospy.wait_for_service('/move_objects')
-    object_pos_request = getPoseResultRequest()
+    object_pos_request = getTablePoseResultRequest()
     object_pos_request.seq = 1
-    temp_object_pos = objectPos()
-
+    temp_object_pos = tableObjectPos()
 
     for i in range(object_num):
-        temp_pose_point = posePoint()
+        temp_pose_point = tablePosePoint()
         temp_pose_point.x = particle[i][0]
         temp_pose_point.y = particle[i][1]
+        temp_pose_point.theta = particle[i][2]
         temp_pose_point.z = 3
         temp_object_pos.object_pos.append(temp_pose_point)
     object_pos_request.pop_pos = temp_object_pos
     try:
-        getObjectResult = rospy.ServiceProxy('move_objects', getPoseResult)
+        getObjectResult = rospy.ServiceProxy('move_objects', getTablePoseResult)
         resp = getObjectResult(object_pos_request)
         return resp
     except rospy.ServiceException as e:
@@ -53,8 +53,8 @@ def receiveObjectResult(particle):
 
 def generate(obj_num, xy_min, xy_max, xy_smin, xy_smax):
     ## each particle has 7 object 
-    part = creator.Particle(numpy.random.uniform(low = xy_min, high = xy_max, size = (obj_num, 2)))
-    part.speed = numpy.random.uniform(low = xy_smin, high = xy_smax, size = (obj_num, 2))
+    part = creator.Particle(numpy.random.uniform(low = xy_min, high = xy_max, size = (obj_num, 3)))
+    part.speed = numpy.random.uniform(low = xy_smin, high = xy_smax, size = (obj_num, 3))
     part.smin = xy_smin
     part.smax = xy_smax
     return part
@@ -81,14 +81,21 @@ def updateParticle(part, best, phi1, phi2):
             if j == 0:
                 flag = True
                 while flag:
-                    if part[i][j] + part.speed[i][j] < 0.45 or part[i][j] + part.speed[i][j] > 1.0:
+                    if part[i][j] + part.speed[i][j] < 0.5 or part[i][j] + part.speed[i][j] > 1.3:
                         part.speed[i][j] = part.speed[i][j] / 2
                     else:
                         flag = False
             elif j == 1:
                 flag = True
                 while flag:
-                    if part[i][j] + part.speed[i][j] < -0.45 or part[i][j] + part.speed[i][j] > 0.45:
+                    if part[i][j] + part.speed[i][j] < -0.35 or part[i][j] + part.speed[i][j] > 0.35:
+                        part.speed[i][j] = part.speed[i][j] / 2
+                    else:
+                        flag = False
+            elif j == 2:
+                flag = True
+                while flag:
+                    if part[i][j] + part.speed[i][j] < -3.14 or part[i][j] + part.speed[i][j] > 3.14:
                         part.speed[i][j] = part.speed[i][j] / 2
                     else:
                         flag = False
@@ -105,13 +112,13 @@ def obj_func(individual):
 
 
 toolbox = base.Toolbox()
-xy_min = [0, -0.45]
-xy_max = [1.0, 0.45]
-xy_smin = [-0.1, -0.1]
-xy_smax = [0.1, 0.1]
-obj_num = 7
+xy_min = [0.50, -0.35, -3.14]
+xy_max = [1.3, 0.35, 3.14]
+xy_smin = [-0.05, -0.05, -0.04]
+xy_smax = [0.05, 0.05, 0.04]
+obj_num = 5
 
-toolbox.register("particle", generate, obj_num, xy_min = [0.45, -0.35], xy_max=[1.0, 0.35], xy_smin = [-0.05, -0.05], xy_smax = [0.05, 0.05])
+toolbox.register("particle", generate, obj_num, xy_min = [0.50, -0.35, -3.14], xy_max=[1.3, 0.35, 3.14], xy_smin = [-0.05, -0.05, -0.04], xy_smax = [0.05, 0.05, 0.04])
 toolbox.register("population", tools.initRepeat, list, toolbox.particle)
 toolbox.register("update", updateParticle, phi1 = 0.3, phi2 = 0.6)
 toolbox.register("evaluate", obj_func)
@@ -171,12 +178,13 @@ if __name__ == "__main__":
     print(best, best.fitness.values)
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
-        final_scene_pos = objectPos()
+        final_scene_pos = tableObjectPos()
         for i in range(len(best)):
-            temp_pose_point = posePoint()
+            temp_pose_point = tablePosePoint()
             temp_pose_point.x = best[i][0]
             temp_pose_point.y = best[i][1]
             temp_pose_point.z = 1
+            temp_pose_point.theta = best[i][2]
             final_scene_pos.object_pos.append(temp_pose_point)
         pub.publish(final_scene_pos)
         # print("publish best pos already")

@@ -5,7 +5,7 @@
 // Robowflex dataset
 #include <motion_bench_maker/parser.h>
 #include <motion_bench_maker/scene_sampler.h>
-#include <motion_bench_maker/objectPos.h>
+// #include <motion_bench_maker/objectPos.h>
 
 // Robowflex library
 #include <robowflex_library/io.h>
@@ -111,7 +111,7 @@ bool getPopResult(motion_bench_maker::getTablePoseResultRequest &req,
     return true;
 }
 
-void getFinalScene(const motion_bench_maker::objectPos::ConstPtr &msg)
+void getFinalScene(const motion_bench_maker::tableObjectPos::ConstPtr &msg)
 {
     ROS_INFO("get object pos");
     if (msg == nullptr)
@@ -127,7 +127,7 @@ void getFinalScene(const motion_bench_maker::objectPos::ConstPtr &msg)
         Eigen::Vector3d pos;
         pos.x() = msg->object_pos[i].x;
         pos.y() = msg->object_pos[i].y;
-        pos[2] = 0.0;
+        pos.z() = msg->object_pos[i].theta;
         final_scene_pos.emplace_back(pos);
     }
     get_final_scene = true;
@@ -209,7 +209,7 @@ int main(int argc, char **argv)
     }
     std::vector<bool> planning_result(total_scene_num);
 
-    scene->fromYAMLFile(scene_file_vec[4]);
+    scene->fromYAMLFile(scene_file_vec[5]);
 
     ros::spin();
     // while (true)
