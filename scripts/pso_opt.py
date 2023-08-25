@@ -23,7 +23,7 @@ creator.create("FitnessMin", base.Fitness, weights=(-1.0, ))
 creator.create("Particle", list, fitness=creator.FitnessMin, speed=list, smin=None, smax=None, best=None)
 
 # initial pose for each object in one particle
-pos = numpy.array([[0.7, -0.058279, -0.358869], [0.5, 0.278224, -0.6166521], [0.9, -0.190976, 1.1623865], [0.7, 0.284192, 1.4096248], [0.9, -0.010244, -0.0733565]])
+pos = numpy.array([[1.26251, -0.0736877, 0.4217124], [1.05595, -0.200426, -1.0262681], [0.669196, 0.245379, -0.0690934], [0.553642, -0.150534, 1.5589317], [1.05642, 0.279887, -0.3930885]])
 
 pop_num = 10
 pop_pos = []  # total population pos of every particle
@@ -104,7 +104,7 @@ def updateParticle(part, best, phi1, phi2):
 
 def obj_func(individual):
     feasible = receiveObjectResult(individual)
-    cost = sum([100 * numpy.linalg.norm(x, 1) for x in map(operator.sub, individual, pos)])
+    cost = sum([100 * numpy.linalg.norm(x[:2], 1) + 50 * abs(x[2]) for x in map(operator.sub, individual, pos)])
     if not feasible.pop_result:
         cost = cost + 10000
     print("feasible is:", feasible.pop_result, "cost is:", round(cost, 3))

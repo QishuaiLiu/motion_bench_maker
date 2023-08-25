@@ -37,11 +37,10 @@ namespace
         for (int i = 0; i < obj_name.size(); ++i)
         {
             // auto test_pose = scene->getObjectPose(obj_name[i]);
-            // get the origin coord
-            // Eigen::Isometry3d temp_pose = Eigen::Isometry3d::Identity();
+            // get the origin coord Eigen::Isometry3d temp_pose = Eigen::Isometry3d::Identity();
             // temp_pose.translation() = Eigen::Vector3d(1.35, 0, 0.85);
-            // get the shape coord
-            // Eigen::Matrix4d test_again = test_pose.matrix() * temp_pose.matrix().inverse();
+            // get the shape coord Eigen::Matrix4d test_again =
+            //     test_pose.matrix() * temp_pose.matrix().inverse();
             // get the quaternion for the shape coord
             // Eigen::Quaterniond q(test_again.block<3, 3>(0, 0));
             // std::cout << "quaternion is: " << q.x() << " " << q.y() << " " << q.z() << " " << q.w()
@@ -58,6 +57,28 @@ namespace
     {
         for (int i = 0; i < obj_name.size(); ++i)
         {
+            if (i == 3)
+            {
+                std::cout << "obj name is: " << obj_name[i] << std::endl;
+                auto test_pose = scene->getObjectPose(obj_name[i]);
+                test_pose.translation().head<2>() = pose[i].head<2>();
+                Eigen::Vector3d angles = Eigen::Vector3d(0, 0, pose[i][2]);
+                Eigen::Quaterniond rot_matrix = Eigen::AngleAxisd(angles[0], Eigen::Vector3d::UnitX())    //
+                                                * Eigen::AngleAxisd(angles[1], Eigen::Vector3d::UnitY())  //
+                                                * Eigen::AngleAxisd(angles[2], Eigen::Vector3d::UnitZ());
+                test_pose.linear() = rot_matrix.toRotationMatrix();
+
+                // get the origin coord
+                Eigen::Isometry3d temp_pose = Eigen::Isometry3d::Identity();
+                temp_pose.translation() = Eigen::Vector3d(0.65, -0.2, 0.9);
+                // get the shape coord
+                Eigen::Matrix4d test_again = test_pose.matrix() * temp_pose.matrix().inverse();
+                // get the quaternion for the shape coord
+                Eigen::Quaterniond q(test_again.block<3, 3>(0, 0));
+                std::cout << "quaternion is: " << q.x() << " " << q.y() << " " << q.z() << " " << q.w()
+                          << std::endl;
+                std::cout << "tran is: \n" << test_again.col(3) << std::endl;
+            }
             auto cur_obj_pose = scene->getObjectPose(obj_name[i]);
             auto temp_pose = cur_obj_pose;
             temp_pose.translation().head<2>() = pose[i].head<2>();
@@ -209,7 +230,7 @@ int main(int argc, char **argv)
     }
     std::vector<bool> planning_result(total_scene_num);
 
-    scene->fromYAMLFile(scene_file_vec[5]);
+    scene->fromYAMLFile(scene_file_vec[10]);
 
     ros::spin();
     // while (true)
@@ -231,7 +252,7 @@ int main(int argc, char **argv)
     //     parser::waitForUser("final scene");
     // }
 
-    // while (true)
+    // while (true && ros::ok())
     // {
     //     rviz->updateScene(scene);  // auto generate_file_name =
     //     // generateNewScene(getSceneFolder(file_name));
@@ -249,6 +270,9 @@ int main(int argc, char **argv)
     //         new_pose[i] = Eigen::Vector3d(pose[i][0], pose[i][1], 0);
     //     }
     //     auto temp_scene = scene->deepCopy();
+    //     ////////////////////
+    //     new_pose[3] = Eigen::Vector3d(0.54953212, -0.14932797, 1.95203857);
+    //     ////////////////////
     //     setObjectPose(new_pose, temp_scene);
     //     rviz->updateScene(temp_scene);
     //     parser::waitForUser("displaying the temp scene.");

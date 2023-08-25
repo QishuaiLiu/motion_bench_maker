@@ -95,7 +95,7 @@ int main(int argc, char **argv)
         if (count >= total_scene_num)
             break;
         ROS_INFO("current count is: %i\n", count);
-        scene->fromYAMLFile(scene_file_vec[count]);
+        scene->fromYAMLFile(scene_file_vec[10]);
 
         rviz->updateScene(scene);  // auto generate_file_name =
                                    // generateNewScene(getSceneFolder(file_name));
