@@ -1,5 +1,6 @@
 // ROS
 #include <moveit_msgs/MoveItErrorCodes.h>
+#include <ros/duration.h>
 #include <ros/ros.h>
 
 // Robowflex dataset
@@ -96,6 +97,8 @@ bool getPopResult(motion_bench_maker::getPoseResultRequest &req,
 
 void getFinalScene(const motion_bench_maker::objectPos::ConstPtr &msg)
 {
+    auto cur_time = ros::Time::now();
+    ROS_INFO("----------------------------------------final time is: %i", cur_time);
     ROS_INFO("get object pos");
     if (msg == nullptr)
     {
@@ -193,6 +196,8 @@ int main(int argc, char **argv)
 
     scene->fromYAMLFile(scene_file_vec[4]);
 
+    auto cur_time = ros::Time::now();
+    ROS_INFO("-------------------------cur time is: %i", cur_time);
     ros::spin();
     // while (true)
     // {
