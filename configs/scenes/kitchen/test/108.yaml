@@ -1,76 +1,74 @@
-name: ""
+robot_model_name: fetch
 robot_state:
   joint_state:
+    position: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     header:
       frame_id: base_link
     name: [l_wheel_joint, r_wheel_joint, torso_lift_joint, bellows_joint, head_pan_joint, head_tilt_joint, shoulder_pan_joint, shoulder_lift_joint, upperarm_roll_joint, elbow_flex_joint, forearm_roll_joint, wrist_flex_joint, wrist_roll_joint, l_gripper_finger_joint, r_gripper_finger_joint]
-    position: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-robot_model_name: fetch
 fixed_frame_transforms:
-  - header:
-      frame_id: base_link
-    child_frame_id: base_link
+  - child_frame_id: base_link
     transform:
       translation: [0, 0, 0]
       rotation: [0, 0, 0, 1]
-allowed_collision_matrix:
-  entry_names: [base_link, bellows_link, bellows_link2, elbow_flex_link, estop_link, forearm_roll_link, gripper_link, head_pan_link, head_tilt_link, l_gripper_finger_link, l_wheel_link, laser_link, r_gripper_finger_link, r_wheel_link, shoulder_lift_link, shoulder_pan_link, torso_fixed_link, torso_lift_link, upperarm_roll_link, wrist_flex_link, wrist_roll_link]
-  entry_values:
-    - [false, true, true, false, true, false, false, true, true, false, true, true, false, true, true, true, true, true, true, false, false]
-    - [true, false, true, true, true, false, false, true, true, false, true, true, false, true, true, true, true, true, true, false, false]
-    - [true, true, false, false, true, false, false, true, true, false, true, true, false, true, true, true, true, true, true, false, false]
-    - [false, true, false, false, true, true, true, false, false, true, true, false, true, true, true, true, false, false, true, true, true]
-    - [true, true, true, true, false, true, false, true, true, false, true, true, true, true, true, true, true, true, true, false, true]
-    - [false, false, false, true, true, false, true, false, false, true, true, false, true, false, true, true, false, false, true, true, true]
-    - [false, false, false, true, false, true, false, false, false, true, false, false, true, false, false, false, false, false, true, true, true]
-    - [true, true, true, false, true, false, false, false, true, false, true, true, false, true, true, true, true, true, false, false, false]
-    - [true, true, true, false, true, false, false, true, false, false, true, true, false, true, true, true, true, true, false, false, false]
-    - [false, false, false, true, false, true, true, false, false, false, true, false, true, false, false, false, false, false, true, true, true]
-    - [true, true, true, true, true, true, false, true, true, true, false, true, true, true, true, true, true, true, true, true, true]
-    - [true, true, true, false, true, false, false, true, true, false, true, false, true, true, true, true, true, true, true, false, false]
-    - [false, false, false, true, true, true, true, false, false, true, true, true, false, false, false, false, false, false, true, true, true]
-    - [true, true, true, true, true, false, false, true, true, false, true, true, false, false, true, true, true, true, true, false, true]
-    - [true, true, true, true, true, true, false, true, true, false, true, true, false, true, false, true, true, false, true, true, true]
-    - [true, true, true, true, true, true, false, true, true, false, true, true, false, true, true, false, true, true, false, true, false]
-    - [true, true, true, false, true, false, false, true, true, false, true, true, false, true, true, true, false, true, false, false, false]
-    - [true, true, true, false, true, false, false, true, true, false, true, true, false, true, false, true, true, false, false, false, false]
-    - [true, true, true, true, true, true, true, false, false, true, true, true, true, true, true, false, false, false, false, true, true]
-    - [false, false, false, true, false, true, true, false, false, true, true, false, true, false, true, true, false, false, true, false, true]
-    - [false, false, false, true, true, true, true, false, false, true, true, false, true, true, true, false, false, false, true, true, false]
+    header:
+      frame_id: base_link
 world:
   collision_objects:
     - header:
         frame_id: base_link
       id: Can1
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
           dimensions: [0.14, 0.03]
       primitive_poses:
         - position: [0.5, 0.1, 1.48]
           orientation: [0, 0, 0, 1]
-    - header:
+    - primitive_poses:
+        - position: [0.6, -0.3, 0.95]
+          orientation: [0, 0, 0, 1]
+      header:
         frame_id: base_link
       id: Can6
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
           dimensions: [0.14, 0.03]
-      primitive_poses:
-        - position: [0.45, 0, 0.95]
+    - mesh_poses:
+        - position: [0, 0, 0]
           orientation: [0, 0, 0, 1]
-    - header:
+      header:
         frame_id: base_link
       id: cupboard
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       meshes:
-        - triangles:
+        - vertices:
+            - [0.4532237350940704, 0.546204686164856, 1.321488738059998]
+            - [0.4532237350940704, 0.546204686164856, 2.046325206756592]
+            - [1.173800349235535, 0.546204686164856, 2.046325206756592]
+            - [1.173800349235535, 0.546204686164856, 1.321488738059998]
+            - [1.173800349235535, -1.146371603012085, 2.046325206756592]
+            - [1.173800349235535, -1.146371603012085, 1.321488738059998]
+            - [0.4532237350940704, -1.146371722221375, 2.046325206756592]
+            - [0.4532237350940704, -1.146371722221375, 1.321488738059998]
+            - [0.4532237350940704, 0.4308608770370483, 1.37088406085968]
+            - [0.4532237350940704, 0.4308608770370483, 1.996930122375488]
+            - [0.4532238245010376, -1.031027913093567, 1.996930122375488]
+            - [0.4532238245010376, -1.031027913093567, 1.37088406085968]
+            - [1.045602679252625, 0.4308609962463379, 1.996930122375488]
+            - [1.045602798461914, -1.031027793884277, 1.996930122375488]
+            - [1.045602798461914, -1.031027793884277, 1.37088406085968]
+            - [1.045602679252625, 0.4308609962463379, 1.37088406085968]
+            - [1.045602679252625, -0.714572012424469, 1.506404519081116]
+            - [1.045602679252625, 0.1144051551818848, 1.506404519081116]
+            - [1.045602679252625, 0.1144051551818848, 1.861409664154053]
+            - [1.045602679252625, -0.714572012424469, 1.861409664154053]
+            - [0.4954573214054108, -1.116620898246765, 1.705378890037537]
+            - [0.4954573512077332, 0.5051299333572388, 1.705378890037537]
+            - [1.163291692733765, 0.5051299333572388, 1.705378890037537]
+            - [1.163291811943054, -1.116620898246765, 1.705378890037537]
+            - [0.4954573214054108, -1.116620898246765, 1.644229769706726]
+            - [1.163291811943054, -1.116620898246765, 1.644229769706726]
+            - [1.163291692733765, 0.5051299333572388, 1.644229769706726]
+            - [0.4954573512077332, 0.5051299333572388, 1.644229769706726]
+          triangles:
             - [0, 1, 2]
             - [0, 2, 3]
             - [3, 2, 4]
@@ -117,44 +115,9 @@ world:
             - [23, 26, 25]
             - [21, 20, 24]
             - [21, 24, 27]
-          vertices:
-            - [0.4532237350940704, 0.546204686164856, 1.321488738059998]
-            - [0.4532237350940704, 0.546204686164856, 2.046325206756592]
-            - [1.173800349235535, 0.546204686164856, 2.046325206756592]
-            - [1.173800349235535, 0.546204686164856, 1.321488738059998]
-            - [1.173800349235535, -1.146371603012085, 2.046325206756592]
-            - [1.173800349235535, -1.146371603012085, 1.321488738059998]
-            - [0.4532237350940704, -1.146371722221375, 2.046325206756592]
-            - [0.4532237350940704, -1.146371722221375, 1.321488738059998]
-            - [0.4532237350940704, 0.4308608770370483, 1.37088406085968]
-            - [0.4532237350940704, 0.4308608770370483, 1.996930122375488]
-            - [0.4532238245010376, -1.031027913093567, 1.996930122375488]
-            - [0.4532238245010376, -1.031027913093567, 1.37088406085968]
-            - [1.045602679252625, 0.4308609962463379, 1.996930122375488]
-            - [1.045602798461914, -1.031027793884277, 1.996930122375488]
-            - [1.045602798461914, -1.031027793884277, 1.37088406085968]
-            - [1.045602679252625, 0.4308609962463379, 1.37088406085968]
-            - [1.045602679252625, -0.714572012424469, 1.506404519081116]
-            - [1.045602679252625, 0.1144051551818848, 1.506404519081116]
-            - [1.045602679252625, 0.1144051551818848, 1.861409664154053]
-            - [1.045602679252625, -0.714572012424469, 1.861409664154053]
-            - [0.4954573214054108, -1.116620898246765, 1.705378890037537]
-            - [0.4954573512077332, 0.5051299333572388, 1.705378890037537]
-            - [1.163291692733765, 0.5051299333572388, 1.705378890037537]
-            - [1.163291811943054, -1.116620898246765, 1.705378890037537]
-            - [0.4954573214054108, -1.116620898246765, 1.644229769706726]
-            - [1.163291811943054, -1.116620898246765, 1.644229769706726]
-            - [1.163291692733765, 0.5051299333572388, 1.644229769706726]
-            - [0.4954573512077332, 0.5051299333572388, 1.644229769706726]
-      mesh_poses:
-        - position: [0, 0, 0]
-          orientation: [0, 0, 0, 1]
     - header:
         frame_id: base_link
       id: cupboard_door_l
-      pose:
-        position: [-0.08217614682366831, 0.07876858590261987, 0]
-        orientation: [0, 0, -0.08053281554209939, 0.9967519579217601]
       meshes:
         - triangles:
             - [0, 1, 2]
@@ -375,14 +338,11 @@ world:
             - [-0.01136606931686401, -0.7372519969940186, 0.00848698616027832]
             - [-0.0417667031288147, -0.7366336584091187, 0.00848698616027832]
       mesh_poses:
-        - position: [0.44637, 0.54793, 1.6839]
-          orientation: [0, 0, -0.416717946214281, 0.9090358371939753]
+        - position: [0.4463699999999999, 0.5479299999999999, 1.6839]
+          orientation: [0, 0, -0.3038843644981197, 0.9527089235509311]
     - header:
         frame_id: base_link
       id: cupboard_door_r
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       meshes:
         - triangles:
             - [0, 1, 2]
@@ -604,13 +564,10 @@ world:
             - [-0.04747598990797997, 0.7904258966445923, 0.008495688438415527]
       mesh_poses:
         - position: [0.44637, -1.1497, 1.6839]
-          orientation: [0, 0, 0.9900215392378353, 0.1409161163428353]
+          orientation: [0, 0, 0.9900215392378353, 0.1409161163428354]
     - header:
         frame_id: base_link
       id: dishwasher_door
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       meshes:
         - triangles:
             - [0, 1, 2]
@@ -640,11 +597,53 @@ world:
     - header:
         frame_id: base_link
       id: kitchen_counter
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       meshes:
-        - triangles:
+        - vertices:
+            - [0.3488028049468994, -0.3147343397140503, 0.005416451953351498]
+            - [0.3488028049468994, -0.3147343397140503, 0.8801456093788147]
+            - [1.176353454589844, -0.3147343397140503, 0.8801456093788147]
+            - [1.176353573799133, -0.3147343397140503, 0.005416451953351498]
+            - [1.176353454589844, -1.142284989356995, 0.8801456093788147]
+            - [1.176353573799133, -1.142284989356995, 0.005416451953351498]
+            - [0.3488028049468994, -1.142284989356995, 0.8801456093788147]
+            - [0.3488028049468994, -1.142284989356995, 0.005416451953351498]
+            - [0.3488028645515442, -0.3809188902378082, 0.7457253932952881]
+            - [0.3488028645515442, -1.076100468635559, 0.7457253932952881]
+            - [0.3488028049468994, -1.076100468635559, 0.07537414878606796]
+            - [0.3488028049468994, -0.3809188902378082, 0.07537414878606796]
+            - [0.9369068145751953, -1.076100468635559, 0.7457253336906433]
+            - [0.9369066953659058, -1.076100468635559, 0.07537417113780975]
+            - [0.9369068145751953, -0.3809188902378082, 0.7457253336906433]
+            - [0.9369066953659058, -0.3809188902378082, 0.07537417113780975]
+            - [0.3571138381958008, -1.076394200325012, 0.4354873895645142]
+            - [0.3571138381958008, -0.3806251287460327, 0.4354873895645142]
+            - [1.168542504310608, -0.3806251287460327, 0.4354873895645142]
+            - [1.168542504310608, -1.076394200325012, 0.4354873895645142]
+            - [0.3571138381958008, -1.076394200325012, 0.4901959300041199]
+            - [1.168542623519897, -1.076394200325012, 0.4901959300041199]
+            - [1.168542623519897, -0.3806251287460327, 0.4901959300041199]
+            - [0.3571138381958008, -0.3806251287460327, 0.4901959300041199]
+            - [0.3568408489227295, -0.3198926448822021, 0.005628027487546206]
+            - [0.3568408489227295, -0.3198926448822021, 0.8776658177375793]
+            - [0.3568408489227295, 1.317852258682251, 0.8776658177375793]
+            - [0.3568408489227295, 1.317852258682251, 0.005628027487546206]
+            - [1.173216938972473, 1.317852258682251, 0.8776656985282898]
+            - [1.173216938972473, 1.317852258682251, 0.005628027487546206]
+            - [1.173216938972473, -0.3198926448822021, 0.8776656985282898]
+            - [1.173216938972473, -0.3198926448822021, 0.005628027487546206]
+            - [0.5419216752052307, -0.1405537277460098, 0.8606319427490234]
+            - [0.9881360530853271, -0.1405537277460098, 0.8606319427490234]
+            - [0.9610741138458252, -0.1024702116847038, 0.6817262172698975]
+            - [0.5689836740493774, -0.1024702116847038, 0.6817262172698975]
+            - [0.9881360530853271, 0.4873917996883392, 0.8606319427490234]
+            - [0.9610741138458252, 0.449308305978775, 0.6817262172698975]
+            - [0.5290085673332214, 0.5378472208976746, 0.8776658177375793]
+            - [1.001049160957336, 0.5378472208976746, 0.8776658177375793]
+            - [0.5419216752052307, 0.4873917996883392, 0.8606319427490234]
+            - [0.5689836740493774, 0.449308305978775, 0.6817262172698975]
+            - [1.00147271156311, -0.1545394361019135, 0.8776656985282898]
+            - [0.5285849571228027, -0.1545394361019135, 0.8776656985282898]
+          triangles:
             - [0, 1, 2]
             - [0, 2, 3]
             - [3, 2, 4]
@@ -719,51 +718,31 @@ world:
             - [33, 43, 42]
             - [40, 32, 35]
             - [40, 35, 41]
-          vertices:
-            - [0.3488028049468994, -0.3147343397140503, 0.005416451953351498]
-            - [0.3488028049468994, -0.3147343397140503, 0.8801456093788147]
-            - [1.176353454589844, -0.3147343397140503, 0.8801456093788147]
-            - [1.176353573799133, -0.3147343397140503, 0.005416451953351498]
-            - [1.176353454589844, -1.142284989356995, 0.8801456093788147]
-            - [1.176353573799133, -1.142284989356995, 0.005416451953351498]
-            - [0.3488028049468994, -1.142284989356995, 0.8801456093788147]
-            - [0.3488028049468994, -1.142284989356995, 0.005416451953351498]
-            - [0.3488028645515442, -0.3809188902378082, 0.7457253932952881]
-            - [0.3488028645515442, -1.076100468635559, 0.7457253932952881]
-            - [0.3488028049468994, -1.076100468635559, 0.07537414878606796]
-            - [0.3488028049468994, -0.3809188902378082, 0.07537414878606796]
-            - [0.9369068145751953, -1.076100468635559, 0.7457253336906433]
-            - [0.9369066953659058, -1.076100468635559, 0.07537417113780975]
-            - [0.9369068145751953, -0.3809188902378082, 0.7457253336906433]
-            - [0.9369066953659058, -0.3809188902378082, 0.07537417113780975]
-            - [0.3571138381958008, -1.076394200325012, 0.4354873895645142]
-            - [0.3571138381958008, -0.3806251287460327, 0.4354873895645142]
-            - [1.168542504310608, -0.3806251287460327, 0.4354873895645142]
-            - [1.168542504310608, -1.076394200325012, 0.4354873895645142]
-            - [0.3571138381958008, -1.076394200325012, 0.4901959300041199]
-            - [1.168542623519897, -1.076394200325012, 0.4901959300041199]
-            - [1.168542623519897, -0.3806251287460327, 0.4901959300041199]
-            - [0.3571138381958008, -0.3806251287460327, 0.4901959300041199]
-            - [0.3568408489227295, -0.3198926448822021, 0.005628027487546206]
-            - [0.3568408489227295, -0.3198926448822021, 0.8776658177375793]
-            - [0.3568408489227295, 1.317852258682251, 0.8776658177375793]
-            - [0.3568408489227295, 1.317852258682251, 0.005628027487546206]
-            - [1.173216938972473, 1.317852258682251, 0.8776656985282898]
-            - [1.173216938972473, 1.317852258682251, 0.005628027487546206]
-            - [1.173216938972473, -0.3198926448822021, 0.8776656985282898]
-            - [1.173216938972473, -0.3198926448822021, 0.005628027487546206]
-            - [0.5419216752052307, -0.1405537277460098, 0.8606319427490234]
-            - [0.9881360530853271, -0.1405537277460098, 0.8606319427490234]
-            - [0.9610741138458252, -0.1024702116847038, 0.6817262172698975]
-            - [0.5689836740493774, -0.1024702116847038, 0.6817262172698975]
-            - [0.9881360530853271, 0.4873917996883392, 0.8606319427490234]
-            - [0.9610741138458252, 0.449308305978775, 0.6817262172698975]
-            - [0.5290085673332214, 0.5378472208976746, 0.8776658177375793]
-            - [1.001049160957336, 0.5378472208976746, 0.8776658177375793]
-            - [0.5419216752052307, 0.4873917996883392, 0.8606319427490234]
-            - [0.5689836740493774, 0.449308305978775, 0.6817262172698975]
-            - [1.00147271156311, -0.1545394361019135, 0.8776656985282898]
-            - [0.5285849571228027, -0.1545394361019135, 0.8776656985282898]
       mesh_poses:
         - position: [0, 0, 0]
           orientation: [0, 0, 0, 1]
+allowed_collision_matrix:
+  entry_values:
+    - [false, true, true, false, true, false, false, true, true, false, true, true, false, true, true, true, true, true, true, false, false]
+    - [true, false, true, true, true, false, false, true, true, false, true, true, false, true, true, true, true, true, true, false, false]
+    - [true, true, false, false, true, false, false, true, true, false, true, true, false, true, true, true, true, true, true, false, false]
+    - [false, true, false, false, true, true, true, false, false, true, true, false, true, true, true, true, false, false, true, true, true]
+    - [true, true, true, true, false, true, false, true, true, false, true, true, true, true, true, true, true, true, true, false, true]
+    - [false, false, false, true, true, false, true, false, false, true, true, false, true, false, true, true, false, false, true, true, true]
+    - [false, false, false, true, false, true, false, false, false, true, false, false, true, false, false, false, false, false, true, true, true]
+    - [true, true, true, false, true, false, false, false, true, false, true, true, false, true, true, true, true, true, false, false, false]
+    - [true, true, true, false, true, false, false, true, false, false, true, true, false, true, true, true, true, true, false, false, false]
+    - [false, false, false, true, false, true, true, false, false, false, true, false, true, false, false, false, false, false, true, true, true]
+    - [true, true, true, true, true, true, false, true, true, true, false, true, true, true, true, true, true, true, true, true, true]
+    - [true, true, true, false, true, false, false, true, true, false, true, false, true, true, true, true, true, true, true, false, false]
+    - [false, false, false, true, true, true, true, false, false, true, true, true, false, false, false, false, false, false, true, true, true]
+    - [true, true, true, true, true, false, false, true, true, false, true, true, false, false, true, true, true, true, true, false, true]
+    - [true, true, true, true, true, true, false, true, true, false, true, true, false, true, false, true, true, false, true, true, true]
+    - [true, true, true, true, true, true, false, true, true, false, true, true, false, true, true, false, true, true, false, true, false]
+    - [true, true, true, false, true, false, false, true, true, false, true, true, false, true, true, true, false, true, false, false, false]
+    - [true, true, true, false, true, false, false, true, true, false, true, true, false, true, false, true, true, false, false, false, false]
+    - [true, true, true, true, true, true, true, false, false, true, true, true, true, true, true, false, false, false, false, true, true]
+    - [false, false, false, true, false, true, true, false, false, true, true, false, true, false, true, true, false, false, true, false, true]
+    - [false, false, false, true, true, true, true, false, false, true, true, false, true, true, true, false, false, false, true, true, false]
+  entry_names: [base_link, bellows_link, bellows_link2, elbow_flex_link, estop_link, forearm_roll_link, gripper_link, head_pan_link, head_tilt_link, l_gripper_finger_link, l_wheel_link, laser_link, r_gripper_finger_link, r_wheel_link, shoulder_lift_link, shoulder_pan_link, torso_fixed_link, torso_lift_link, upperarm_roll_link, wrist_flex_link, wrist_roll_link]
+name: ""

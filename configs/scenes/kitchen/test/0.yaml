@@ -1,11 +1,11 @@
-name: ""
 robot_state:
   joint_state:
+    name: [l_wheel_joint, r_wheel_joint, torso_lift_joint, bellows_joint, head_pan_joint, head_tilt_joint, shoulder_pan_joint, shoulder_lift_joint, upperarm_roll_joint, elbow_flex_joint, forearm_roll_joint, wrist_flex_joint, wrist_roll_joint, l_gripper_finger_joint, r_gripper_finger_joint]
     header:
       frame_id: base_link
-    name: [l_wheel_joint, r_wheel_joint, torso_lift_joint, bellows_joint, head_pan_joint, head_tilt_joint, shoulder_pan_joint, shoulder_lift_joint, upperarm_roll_joint, elbow_flex_joint, forearm_roll_joint, wrist_flex_joint, wrist_roll_joint, l_gripper_finger_joint, r_gripper_finger_joint]
     position: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 robot_model_name: fetch
+name: ""
 fixed_frame_transforms:
   - header:
       frame_id: base_link
@@ -42,9 +42,6 @@ world:
     - header:
         frame_id: base_link
       id: Can1
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
           dimensions: [0.14, 0.03]
@@ -54,9 +51,6 @@ world:
     - header:
         frame_id: base_link
       id: Can6
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       primitives:
         - type: cylinder
           dimensions: [0.14, 0.03]
@@ -66,9 +60,6 @@ world:
     - header:
         frame_id: base_link
       id: cupboard
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       meshes:
         - triangles:
             - [0, 1, 2]
@@ -152,9 +143,6 @@ world:
     - header:
         frame_id: base_link
       id: cupboard_door_l
-      pose:
-        position: [0.01570121561052745, -0.01242511950235092, 0]
-        orientation: [0, 0, 0.01416570510217035, 0.9998996613655583]
       meshes:
         - triangles:
             - [0, 1, 2]
@@ -375,14 +363,11 @@ world:
             - [-0.01136606931686401, -0.7372519969940186, 0.00848698616027832]
             - [-0.0417667031288147, -0.7366336584091187, 0.00848698616027832]
       mesh_poses:
-        - position: [0.44637, 0.54793, 1.6839]
-          orientation: [0, 0, -0.416717946214281, 0.9090358371939753]
+        - position: [0.4463699999999999, 0.54793, 1.6839]
+          orientation: [0, 0, -0.2772141872026733, 0.9608081465170667]
     - header:
         frame_id: base_link
       id: cupboard_door_r
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       meshes:
         - triangles:
             - [0, 1, 2]
@@ -604,13 +589,10 @@ world:
             - [-0.04747598990797997, 0.7904258966445923, 0.008495688438415527]
       mesh_poses:
         - position: [0.44637, -1.1497, 1.6839]
-          orientation: [0, 0, 0.9900215392378353, 0.1409161163428353]
+          orientation: [0, 0, 0.9900215392378353, 0.1409161163428354]
     - header:
         frame_id: base_link
       id: dishwasher_door
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       meshes:
         - triangles:
             - [0, 1, 2]
@@ -640,9 +622,6 @@ world:
     - header:
         frame_id: base_link
       id: kitchen_counter
-      pose:
-        position: [0, 0, 0]
-        orientation: [0, 0, 0, 1]
       meshes:
         - triangles:
             - [0, 1, 2]
