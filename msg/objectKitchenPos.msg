@@ -1,0 +1,1 @@
+poseKitchenPoint[] object_pos
